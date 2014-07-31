@@ -1,90 +1,60 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
 <!doctype html>
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href='http://fonts.googleapis.com/css?family=Open+Sans'
-	rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
 <link href="css/select2.css" rel="stylesheet">
 <link href="css/joyride-2.1.css" rel="stylesheet">
 <link href="css/bootstrap.css" rel="stylesheet">
 <link href="css/home.css" rel="stylesheet">
-<script src="jsLib/underscore-min.js"></script>
-<script src="jsLib/jquery-1.10.2.js"></script> 
-<script src="jsLib/bootstrap.min.js"></script>
-<script src="jsLib/backbone-min.js"></script>
-<script src="jsLib/select2.js"></script>
-<script type="text/javascript" src="jsLib/jquery.cookie.js"></script>
-<script type="text/javascript" src="jsLib/modernizr.mq.js"></script>
-<script type="text/javascript" src="jsLib/jquery.joyride-2.1.js"></script>
+<script type="text/javascript" src="jsLib/underscore-min.js"></script>
+<script type="text/javascript" src="jsLib/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="jsLib/bootstrap.min.js"></script>
+<script type="text/javascript" src="jsLib/backbone-min.js"></script>
+<script type="text/javascript" src="jsLib/select2.js"></script>
 
-<script src="js/home.js"></script>
-<script src="js/app.js"></script>
+<script type="text/javascript" src="js/home.js"></script>
+<script type="text/javascript" src="js/app.js"></script>
+<script type="text/javascript" src="js/ApplicationRouter.js"></script>
 <title>Home</title>
 </head>
 <body>
 	<!-------------------- Nav Bar ------------->
 
-	<div id="header" class="navbar-static-top" style="width: 100%">
-		<div class="navbar-inverse "
-			style="margin-bottom: 0px; border-radius: 0px; min-height: 30px;">
-			<div style="padding-right: 10px;">
-				<ul class="nav navbar-nav nav-pills navbar-right"
-					style="margin-right: 0px; margin-top: 0px; margin-bottom: 0px;">
-					<li><button class="btn btn-success btn-sm" data-toggle="modal"
-							data-target="#upgrade-plan-modal">UPDATE</button></li>
-					<li><a href="#" class="dropdown-toggle"
-						style="line-height: 0px;" data-toggle="dropdown"><b>User
-								Name</b> <b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li id="help"><a href="#"><span
-									class="glyphicon glyphicon-question-sign"></span> Help</a></li>
-							<li class="divider"></li>
-							<li id="settings_tab"><a href="#settings"><span
-									class="glyphicon glyphicon-cog"></span> Settings </a></li>
-							<li class="divider"></li>
-							<li id="sign_out"><a href="#"><span
-									class="glyphicon glyphicon-off"></span> Sign Out »<span>See
-										you soon!</span></a></li>
-						</ul>
-					<li>
-				</ul>
-			</div>
-		</div>
-		<!-- Second Nav Bar-->
-		<div class="navbar navbar-default" role="navigation" id="navbar"
-			style="border-radius: 0px;">
-			<div class="container">
-				<div class="navbar-header">
-					<button class="navbar-toggle navbar-right" data-toggle="collapse"
-						data-target=".navHeaderCollapse">
-						<span class="icon-bar"></span> <span class="icon-bar"></span> <span
-							class="icon-bar"></span>
-					</button>
-					<a href="#contacts" class="navbar-brand">Distributed Source</a>
-				</div>
-				<div class="collapse navbar-collapse navHeaderCollapse">
-					<ul class="nav navbar-nav navbar-right" id="navgationList">
-						<li id="inbox_tab" class="active"><a class=" pageLink"
-							href="#/inbox"><span class="glyphicon glyphicon-save"></span>
-								Inbox</a></li>
-						<li id="contacts_tab"><a class="pageLink" href="#/contacts"><span
-								class="glyphicon glyphicon-user"></span> Contacts</a></li>
-						<li id="tasks_tab"><a class="pageLink" href="#/tasks"><span
-								class="glyphicon glyphicon-tasks"></span> Tasks</a></li>
-						<li id="deals_tab"><a class="pageLink" href="#/deals"><span
-								class="glyphicon glyphicon-briefcase"></span> Deals</a></li>
-						<li id="accounts_tab"><a class="pageLink" href="#/accounts"><span
-								class="glyphicon glyphicon-list-alt"></span> Accounts</a></li>
-						<li id="templates_tab"><a class="pageLink" href="#/templates"><span
-								class="glyphicon glyphicon-envelope"></span> Templates</a></li>
-						<li id="reports_tab"><a class="pageLink" href="#/reports"><span
-								class="glyphicon glyphicon-stats"></span> Reports</a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
+	<div class="navbar navbar-inverse navbar-static-top"> 
+	    <div class="container">
+		    <button class="navbar-toggle" data-toggle="collapse" data-target=".navHeaderCollapse">
+			    <span class="icon-bar"></span>
+			    <span class="icon-bar"></span>
+			    <span class="icon-bar"></span>
+		    </button>
+		  
+		    <a href="/" class="navbar-brand">Spring By Hrishabh</a>
+		    
+		    <div class="collapse navbar-collapse navHeaderCollapse">
+			    <ul class="nav navbar-nav navbar-right" id="links">
+			    	<li><a href="#">Welcome
+		    <%if(session.getAttribute("user")==null){ %>
+		    	Guest
+		    <%}else{ %>
+		    	${user}
+		    <%} %></a></li>
+			    	<li id="home"><a href="/">Home</a></li>
+			    	<%if(session.getAttribute("user")==null){ %><li id="signin"><a href="#signIn" data-toggle="modal">SignIn</a></li><%} %>
+			    	<%if(session.getAttribute("user")==null){ %><li ><a href="#register" data-toggle="modal">Register</a></li><%} %>
+				    <%if(session.getAttribute("user")!=null){ %><li id="profile"><a href="/detail" id="profile">Profile</a></li><%} %>
+				   <%if(session.getAttribute("user")!=null){ %> <li id=friend><a href="/friend">Search</a></li><%} %>
+				    <%if(session.getAttribute("user")!=null){ %> <li id=image><a href="/image">Images</a></li><%} %>
+				    <%if(session.getAttribute("user")!=null){ %> <li id=video><a href="/video">Video</a></li><%} %>
+				   <%if(session.getAttribute("user")!=null){ %> <li id=logout><a href="/logout">Logout</a></li><%} %>
+			    </ul>
+	    
+	    	</div>
+	    </div>
+    </div>
 	<!-- Body Part -->
 	<div class="container" id="page-container"></div>
 	<!-- Login -->
@@ -122,7 +92,7 @@
 						<a type="button" class="btn btn-danger "
 							href="https://accounts.google.com/o/oauth2/auth?redirect_uri=http://distributed-source.appspot.com/oauth2callback
 											&response_type=code&client_id=267273999336.apps.googleusercontent.com
-											&scope=https://www.googleapis.com/auth/drive+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&approval_prompt=auto&access_type=online">Google</a>
+											&scope=https://www.googleapis.com/auth/drive+https@3A@2F@2Fwww.googleapis.com@2Fauth@2Fuserinfo.email+https@3A@2F@2Fwww.googleapis.com@2Fauth@2Fuserinfo.profile&approval_prompt=auto&access_type=online">Google</a>
 						<p class="help-block">
 							If You don't have these then <a href="#register"
 								data-dismiss="modal" data-toggle="modal" data-target="#register">Register
@@ -198,7 +168,7 @@
 	        	</ul>
         	</div>
         	<div class="container tab-body" id="contact_body">
-        	<div class="row" style=" height: 100%; ">
+        	<div class="row" style=" height: 100@; ">
 	        	<div class="col-sm-3 contact-container">
         			<div class="navbar navbar-default nav-contact-panel" role="navigation" >
         				<ul class="nav nav-pills">
@@ -222,7 +192,7 @@
 					</div>
 	        	</div>
 	        	<div class="contact-container col-sm-4 " id="customer_info">
-	        		<img style="position:absolute;top:50%;right:25%;display:block;" src="img/empty_contact.png">
+	        		<img style="position:absolute;top:50@;right:25@;display:block;" src="img/empty_contact.png">
 	        	</div>
 	        	<div class="col-sm-5 " id='person_col3_holder'>
 	        		
@@ -1033,14 +1003,14 @@
 		</div>
 	</div>
 	<script type="text/template" id=person-list-template>
-    		<%_.each(personsList, function(person){%>
+    		<@_.each(personsList, function(person){@>
 			<div class="row">
 				<div class="input-group">
-					<button type="button" class="btn btn-default form-control show-person" id=<%= person.get('id') %>><span class="pull-left"><%= person.get('name') %></span></button>
-					<span class="input-group-addon btn btn-default delete-person" id=<%= person.get('id') %>><span class="glyphicon glyphicon-trash " id=<%= person.id %>> </span></span>
+					<button type="button" class="btn btn-default form-control show-person" id=<@= person.get('id') @>><span class="pull-left"><@= person.get('name') @></span></button>
+					<span class="input-group-addon btn btn-default delete-person" id=<@= person.get('id') @>><span class="glyphicon glyphicon-trash " id=<@= person.id @>> </span></span>
 				</div>
 			</div>
-			<%});%>
+			<@});@>
     	</script>
 	<script type="text/template" id=person-detail-template>
     		<div class="row" style="margin-top: 15px;">
@@ -1056,7 +1026,7 @@
 	    			<div class="form-group frm-grp">
 	    					<div class="panel panel-default form-info-field">
 								<div class="panel-body" id=static-name>
-								<%= person.get('name') %>
+								<@= person.get('name') @>
 								</div>
 							</div>
 	    				</div>
@@ -1070,7 +1040,7 @@
 	    				<div class="form-group frm-grp">
 	    					<div class="panel panel-default form-info-field">
 								<div class="panel-body" id=static-jobTitle>
-								<%= person.get('jobTitle')%>
+								<@= person.get('jobTitle')@>
 								</div>
 							</div>
 	    				</div>
@@ -1084,7 +1054,7 @@
 	    				<div class="form-group frm-grp">
 	    					<div class="panel panel-default form-info-field">
 								<div class="panel-body" id=static-company>
-								<%= person.get('company') %>
+								<@= person.get('company') @>
 								</div>
 							</div>
 	    				</div>
@@ -1098,7 +1068,7 @@
 	    				<div class="form-group frm-grp">
 	    					<div class="panel panel-default form-info-field">
 								<div class="panel-body" id=static-source>
-								<%= person.get('source')%>
+								<@= person.get('source')@>
 								</div>
 							</div>
 	    				</div>
@@ -1112,7 +1082,7 @@
 	    				<div class="form-group frm-grp">
 	    					<div class="panel panel-default form-info-field">
 								<div class="panel-body" id=static-phone>
-								<%= person.get('phone')%>
+								<@= person.get('phone')@>
 								</div>
 							</div>
 	    				</div>
@@ -1126,7 +1096,7 @@
 	    				<div class="form-group frm-grp">
 	    					<div class="panel panel-default form-info-field">
 								<div class="panel-body" id=static-email>
-								<%= person.get('email')%><span class="pull-right btn glyphicon glyphicon-envelope send-email" id='<%= person.get('id')%>'></span>
+								<@= person.get('email')@><span class="pull-right btn glyphicon glyphicon-envelope send-email" id='<@= person.get('id')@>'></span>
 								</div>
 							</div>
 	    				</div>
@@ -1140,7 +1110,7 @@
 	    				<div class="form-group frm-grp">
 	    					<div class="panel panel-default form-info-field">
 								<div class="panel-body" id=static-social>
-								<%= person.get('social')%>
+								<@= person.get('social')@>
 								</div>	
 							</div>
 	    				</div>
@@ -1154,7 +1124,7 @@
 	    				<div class="form-group frm-grp">
 	    					<div class="panel panel-default form-info-field">
 								<div class="panel-body" id=static-website>
-								<%= person.get('website')%>
+								<@= person.get('website')@>
 								</div>
 							</div>
 	    				</div>
@@ -1168,7 +1138,7 @@
 	    				<div class="form-group frm-grp">
 	    					<div class="panel panel-default form-info-field">
 								<div class="panel-body" id=static-street>
-								<%= person.get('street')%>
+								<@= person.get('street')@>
 								</div>
 							</div>
 	    				</div>
@@ -1182,7 +1152,7 @@
 	    				<div class="form-group frm-grp" >
 	    					<div class="panel panel-default form-info-field">
 								<div class="panel-body" id=static-city>
-								<%= person.get('city')%>
+								<@= person.get('city')@>
 								</div>
 							</div>
 	    				</div>
@@ -1196,7 +1166,7 @@
 	    				<div class="form-group frm-grp">
 	    					<div class="panel panel-default form-info-field">
 								<div class="panel-body" id=static-state>
-								<%= person.get('state')%>
+								<@= person.get('state')@>
 								</div>
 							</div>
 	    				</div>
@@ -1210,7 +1180,7 @@
 	    				<div class="form-group frm-grp">
 	    					<div class="panel panel-default form-info-field">
 								<div class="panel-body" id=static-country>
-								<%= person.get('country')%>
+								<@= person.get('country')@>
 								</div>
 							</div>
 	    				</div>
@@ -1224,7 +1194,7 @@
 	    				<div class="form-group frm-grp">
 	    					<div class="panel panel-default form-info-field">
 								<div class="panel-body " id=static-zip>
-									<%= person.get('zip')%>
+									<@= person.get('zip')@>
 								</div>
 							</div>
 	    				</div>
@@ -1233,8 +1203,8 @@
 					<div class="row">
 	    			<div >
 	    				<button class="btn btn-default edit-person-btn" type="button">Edit</button>
-						<button class="btn btn-success save-person-btn" type="button" id=<%= person.id %>>Save</button>
-						<button class="btn btn-danger delete-person-btn" type="button" id=<%= person.id %>>Delete</button>
+						<button class="btn btn-success save-person-btn" type="button" id=<@= person.id @>>Save</button>
+						<button class="btn btn-danger delete-person-btn" type="button" id=<@= person.id @>>Delete</button>
 	    			</div>
 	    		</div>
     	</script>
@@ -1256,22 +1226,22 @@
 		        				<button type="button" class="btn btn-default" data-toggle="modal" data-target="#import-lead-modal"  id="import-document" style="display:none">Import document</button>
 		        			</thead>
 		        			<tbody id="contacts-col3-table">
-								<%var i=0;%>
-		        				<%_.each(docsList, function(driveItem){%> 
+								<@var i=0;@>
+		        				<@_.each(docsList, function(driveItem){@> 
 										
 										<tr>
 		        						<td >
-											<input type="checkbox" id="<%= driveItem.id %>" class="drive-doc-check">
+											<input type="checkbox" id="<@= driveItem.id @>" class="drive-doc-check">
 										</td>
 										<td >
-											<i><img src="<%=driveItem.iconLink %>"></img></i><a href="<%= driveItem.alternateLink%>" target="_blank"><%= driveItem.title%></a>
+											<i><img src="<@=driveItem.iconLink @>"></img></i><a href="<@= driveItem.alternateLink@>" target="_blank"><@= driveItem.title@></a>
 										</td>
 										<td >
-											<button id="<%= i %>" class="btn btn-danger btn-sm delete-doc">Delete</button>
+											<button id="<@= i @>" class="btn btn-danger btn-sm delete-doc">Delete</button>
 										</td>
 		        					</tr>	
-									<%i++;%>
-									 <%});%> 
+									<@i++;@>
+									 <@});@> 
 		        			</tbody>
 		        		</table>
         			</div>
@@ -1285,7 +1255,7 @@
 	    					</div>
 	    					<div class="col-sm-10">
 	    						<select class="form-control col-sm-3" id="email-sender">
-	    							<option value=<%= person.get('from') %>><%= person.get('from') %></option>
+	    							<option value=<@= person.get('from') @>><@= person.get('from') @></option>
 	    						</select>
 	    					</div>
 	    				</div>
@@ -1295,7 +1265,7 @@
 	    						To:
 	    					</div>
 	    					<div class="col-sm-10">
-	    						<input class="form-control" id="email-recipient" value="<%= person.get('email') %>">
+	    						<input class="form-control" id="email-recipient" value="<@= person.get('email') @>">
 	    					</div>
 	    				</div>
 	    				<div class="row form-group">
@@ -1328,11 +1298,11 @@
 	    				</div>
 	    			 	<div class="form-group">
 	    					<div class="panel panel-default" >
-	    						<div class="panel-body" id="email-content" contenteditable=true style="min-height:100%">
+	    						<div class="panel-body" id="email-content" contenteditable=true style="min-height:100@">
 	    							<br>
 									<span>
 										Thanks and Regards<br>
-										<%= person.get('name')%>
+										<@= person.get('name')@>
 									</span>
 	    						</div>
 	    					</div>
@@ -1374,16 +1344,16 @@
 						<th>File List</th>
 					</thead>
 		        		<tbody id="contacts-col3-table">
-						<%_.each(driveItemsList, function(driveItem){%>
+						<@_.each(driveItemsList, function(driveItem){@>
 									<tr>
 		        						<td >
-											<input type="checkbox" id="<%= driveItem.id %>" class="drive-doc-check">
+											<input type="checkbox" id="<@= driveItem.id @>" class="drive-doc-check">
 										</td>
 										<td >
-											<i><img src="<%=driveItem.attributes.iconLink %>"></img></i><a href="<%= driveItem.attributes.alternateLink%>" target="_blank"><%= driveItem.get('title')%></a>
+											<i><img src="<@=driveItem.attributes.iconLink @>"></img></i><a href="<@= driveItem.attributes.alternateLink@>" target="_blank"><@= driveItem.get('title')@></a>
 										</td>
 		        					</tr>	
-								<%});%>
+								<@});@>
 		        		</tbody>
 					</table>
 				</div>
@@ -1418,3 +1388,4 @@
     	
   	</body>
 </html>
+    
