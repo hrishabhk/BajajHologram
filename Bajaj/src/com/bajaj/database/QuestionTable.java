@@ -86,6 +86,35 @@ public class QuestionTable {
 		return lQuesData;
 	}
 	
+	/**
+	 * @author abhishek
+	 * @param pQuestionStroke
+	 * @return
+	 */
+	
+   public QuestionDTO getAllFrequentQuestion(String pIndex) {
+		
+		QuestionDTO lQuesData = new QuestionDTO();
+		try {
+			Connection lConnection = CommonUtility.getSqlConnection();
+			java.sql.Statement lSmt = lConnection.createStatement();
+			
+			String lQuery 		 = "SELECT * FROM "+SQL_QUES_TABLENAME+" WHERE "+FREQUENT+" = 'true' LIMIT "+pIndex+" , 10";
+			ResultSet lResultSet = lSmt.executeQuery(lQuery);
+			
+			while (lResultSet.next()) {
+				lQuesData.setAnswer(lResultSet.getString(ANSWER));
+				lQuesData.setCateory(lResultSet.getString(CATEGORY));
+				lQuesData.setId(lResultSet.getString(QUES_ID));
+			 }
+			 lConnection.close();
+			 CommonUtility.deRegistarDriverManager();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lQuesData;
+	}
+	
 	
 	
 	/**
@@ -116,7 +145,11 @@ public class QuestionTable {
 		
 		return lDeleted;
 	}
-	
+	/**
+	 * @author abhishek
+	 * @param pQuesDetail
+	 * @return
+	 */
 	
 	public Boolean updateQuestionById(QuestionDTO pQuesDetail) {
 		
@@ -141,5 +174,8 @@ public class QuestionTable {
 		
 		return lUpdate;
 	}
+	
+	
+	
 }
 

@@ -24,7 +24,6 @@ import com.google.gson.Gson;
 @Controller
 public class UserController {
 	
-	
 	Gson mGson = new Gson();
 	
 	
@@ -142,6 +141,34 @@ public class UserController {
 				   lQuestiomnDetail.put(GlobalVariables.RESPONSE, false);
 			   }
 		   }
+		   lDataToPost = mGson.toJson(lQuestiomnDetail);
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	   return lDataToPost;
+   }
+   
+   
+   @RequestMapping(value="/searchQuestion.do", method = RequestMethod.GET)
+   public String getAllFrequentQuestion(HttpServletRequest req, HttpServletResponse resp) {
+	  
+	   String lDataToPost							 = "";
+	   String lIndex								 = "";
+	   HashMap<String, Object> lQuestiomnDetail      = new HashMap<String, Object>();
+	   
+	   try {
+		if(!lIndex.equals("")) {
+			lIndex = "0";
+		}
+			   QuestionDTO lQuesDetail = new QuestionTable().getAllFrequentQuestion(lIndex);
+			   if(lQuesDetail != null) {
+				   lQuestiomnDetail.put(GlobalVariables.RESPONSE, true);
+				   lQuestiomnDetail.put(GlobalVariables.QUESTION, lQuesDetail.getQuestion());
+				   lQuestiomnDetail.put(GlobalVariables.ANSWER, lQuesDetail.getAnswer());
+				   lQuestiomnDetail.put(GlobalVariables.CATEGORY, lQuesDetail.getCateory());
+				   lQuestiomnDetail.put(GlobalVariables.ID, lQuesDetail.getId());
+				   lQuestiomnDetail.put(GlobalVariables.FREQUENT, lQuesDetail.getFrequent());
+			   } 
 		   lDataToPost = mGson.toJson(lQuestiomnDetail);
 	} catch (Exception e) {
 		e.printStackTrace();
