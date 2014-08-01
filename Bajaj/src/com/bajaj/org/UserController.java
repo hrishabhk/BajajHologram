@@ -7,13 +7,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class UserController 
-{
-
+public class UserController {
+	
 	@RequestMapping(value="/index.do")
-	public String homePage(HttpServletRequest req, HttpServletResponse resp)
-	{
-		System.out.println("Hrishabh Shukla");
+	public String homePage(HttpServletRequest req, HttpServletResponse resp) {
+		try {
+			
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return "index";
 	}
 }
