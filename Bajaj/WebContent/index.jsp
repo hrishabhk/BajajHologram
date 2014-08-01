@@ -1,24 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+ <%
+ String loginModule = (String)session.getAttribute("loginModule");
+ %>
 <!doctype html>
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-<link href="css/select2.css" rel="stylesheet">
-<link href="css/joyride-2.1.css" rel="stylesheet">
-<link href="css/bootstrap.css" rel="stylesheet">
-<link href="css/home.css" rel="stylesheet">
-<script type="text/javascript" src="jsLib/underscore-min.js"></script>
-<script type="text/javascript" src="jsLib/jquery-1.10.2.js"></script>
-<script type="text/javascript" src="jsLib/bootstrap.min.js"></script>
-<script type="text/javascript" src="jsLib/backbone-min.js"></script>
-<script type="text/javascript" src="jsLib/select2.js"></script>
-
-<script type="text/javascript" src="js/home.js"></script>
-<script type="text/javascript" src="js/app.js"></script>
-<script type="text/javascript" src="js/ApplicationRouter.js"></script>
+<link href="lib/css/bootstrap.css" rel="stylesheet">
+<link rel="stylesheet" type="text/stylesheet" href="lib/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/stylesheet" href="css/reset.css">
+<link rel="stylesheet" type="text/stylesheet" href="css/style.css">
+<link rel="stylesheet" type="text/stylesheet" href="css/styles.css">
+<script type="text/javascript">
+var loginModule = <%=loginModule%>;
+</script>
 <title>Home</title>
 </head>
 <body>
@@ -42,24 +40,39 @@
 		    <%}else{ %>
 		    	${user}
 		    <%} %></a></li>
-			    	<li id="home"><a href="/">Home</a></li>
+			    	<li id="home"><a href="./">Home</a></li>
 			    	<%if(session.getAttribute("user")==null){ %><li id="signin"><a href="#signIn" data-toggle="modal">SignIn</a></li><%} %>
 			    	<%if(session.getAttribute("user")==null){ %><li ><a href="#register" data-toggle="modal">Register</a></li><%} %>
-				    <%if(session.getAttribute("user")!=null){ %><li id="profile"><a href="/detail" id="profile">Profile</a></li><%} %>
-				   <%if(session.getAttribute("user")!=null){ %> <li id=friend><a href="/friend">Search</a></li><%} %>
-				    <%if(session.getAttribute("user")!=null){ %> <li id=image><a href="/image">Images</a></li><%} %>
-				    <%if(session.getAttribute("user")!=null){ %> <li id=video><a href="/video">Video</a></li><%} %>
-				   <%if(session.getAttribute("user")!=null){ %> <li id=logout><a href="/logout">Logout</a></li><%} %>
+				    <%if(session.getAttribute("user")!=null){ %><li id="profile"><a href="./detail" id="profile">Profile</a></li><%} %>
+				   <%if(session.getAttribute("user")!=null){ %> <li id=friend><a href="./friend">Search</a></li><%} %>
+				    <%if(session.getAttribute("user")!=null){ %> <li id=image><a href="./image">Images</a></li><%} %>
+				    <%if(session.getAttribute("user")!=null){ %> <li id=video><a href="./video">Video</a></li><%} %>
+				   <%if(session.getAttribute("user")!=null){ %> <li id=logout><a href="./logout">Logout</a></li><%} %>
 			    </ul>
-	    
 	    	</div>
 	    </div>
     </div>
+    <div class="navbar  navbar-default" id="theme-header"> 
+	    <div class="container">
+		  
+		    <a href="/" class="navbar-brand">Spring By Hrishabh</a>
+	    </div>
+    </div>
+    <div id="live-search">
+    <div class="container">
+    <div id="search-wrap">
+      <form role="search" method="get" id="searchform" class="clearfix" action="#" autocomplete="off">
+        <input type="text" onfocus="if (this.value == &#39;Have a question? Ask or enter a search term.&#39;) {this.value = &#39;&#39;;}" onblur="if (this.value == &#39;&#39;)  {this.value = &#39;Have a question? Ask or enter a search term.&#39;;}" value="Have a question? Ask or enter a search term." name="s" id="s" autocomplete="off">
+        <input type="submit" id="searchsubmit" value="Search">
+      </form>
+      </div>
+    </div>
+    </div>
 	<!-- Body Part -->
-	<div class="container" id="page-container"></div>
+	<div class="container" id="questionContainer"></div>
 	<!-- Login -->
 
-	<div class="modal fade" id="signIn" role="dialog">
+	<!-- <div class="modal fade" id="signIn" role="dialog">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -106,50 +119,46 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> -->
 
 	<!----------------        Inbox      ------------------>
-	<script type="text/template" id='inbox-template'>
+	<script type="text/template" id='question-template'>
 		  <div class=container id="inbox_div" >
 		 
 		  	<div id="inbox_header" class="navbar"style="padding-right:10px;">
 	        	<ul class="nav nav-pills navbar-left input_element">
-		        	<li><a class="btn btn-default btn-sm" data-toggle="modal" data-target="#new-leads" id="add-new-lead-btn">+ New Lead</a></li>
-		        	<li ><a data-toggle="modal" data-target="#import-lead-modal" id=import-leads-button> Import Leads</a><li>
-		        	<li class="pull-right  col-sm-3">
-						<div class="input-group input_element">
-						  	<input type="text" class="form-control" placeholder="Search" id="search-box">
-						  	<span class="input-group-addon btn"><span class="glyphicon glyphicon-search"></span></span>
-						</div>
-		        	</li>
+		        	<li><a class="btn btn-default btn-sm" data-toggle="modal" data-target="#new-leads" id="add-new-lead-btn">+ New Question</a></li>
 	        	</ul>
         	</div>
         	<div class="container tab-body" id="inbox_body">
         		<table class="table table-stripped" id=inbox-table>
         			<thead>
         				<tr>
-        					<th>Person</th>
-        					<th>Company</th>
-        					<th>Phone</th>
-        					<th>Email</th>
-        					<th>Notes/Additonal Info</th>
-        					<th>Source</th>
+        					<th>QuestionList</th>
         				</tr>
         			</thead>
-        			<tbody>
-        				<tr>
-        					<td>Hrishabh</td>
-        					<td>Adaptavant</td>
-        					<td>1234567890</td>
-        					<td>hrishabh.kumar@a-cti.com</td>
-        					<td>Notes/Additonal Info</td>
-        					<td>Source</td>
-        				</tr>	
+        			<tbody id="questionList">
+        					
         			</tbody>
         		</table>
         	</div>
 		  </div>
 		  </script>
+	<!-----------        QuestionList       ------------>
+<script type="text/template" id="questionListTemplate">
+<tr>
+  	<td>
+		<ul>
+			<span class="col-sm-1"><button id="<@=QAModel.id@>" class="expand_listBtn"><i class="glyphicon glyphicon-plus"></i></button></span>
+			<span class="col-sm-11">
+			<li class="question"><@=QAModel.question@></li>
+			<li id="answer_<@=QAModel.id@>" class="answer" style="display:none"><@=QAModel.answer@></li>
+			</span>
+		</ul>
+	</td>
+</tr>
+
+</script>
 	<!-----------        Contacts       ------------>
 	<script type="text/template" id='contacts-template'> 
 		  <div class="container"id="contacts_div" >
@@ -1362,30 +1371,16 @@
 					<button class="btn btn-info docs-import-btn" >Import</button>
 				</div>
 		</script>
-		<ol id="joyRideTipContent">
-		 <li data-class="table" data-button="Next" data-options="tipLocation:right">
-        <h2>Access contacts</h2>
-        <p>You can access your contacts by clicking this link.</p>
-      </li>
-      <li data-id="add-new-lead-btn" data-text="Next" class="custom">
-        <h2>Add a new Lead</h2>
-        <p>You can add new Lead details from here.</p>
-      </li>
-      <li data-id="import-leads-button" data-button="Next" data-options="tipLocation:top;tipAnimation:fade">
-        <h2>Import you leads</h2>
-        <p>You can import the details of your leads using this link.</p>
-      </li>
-      <li data-id="search-box" data-button="Next" data-options="tipLocation:right">
-        <h2>Search your Leads</h2>
-        <p>You can search your leads from here.</p>
-      </li>
-     
-      <li data-button="Close">
-        <h2>Thank you</h2>
-        <p>It works as a modal too!</p>
-      </li>
-    </ol>
-    	
+		<script type="text/javascript" src="lib/js/underscore-min.js"></script>
+		<script type="text/javascript" src="lib/js/jquery-1.10.2.js"></script>
+		<script type="text/javascript" src="lib/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="lib/js/backbone-min.js"></script>
+		<script type="text/javascript" src="lib/js/jquery.dataTables.js"></script>
+		
+		<script type="text/javascript" src="js/home.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/view/QuestionView.js"></script>
+		<script type="text/javascript" src="js/ApplicationRouter.js"></script>
   	</body>
 </html>
     
