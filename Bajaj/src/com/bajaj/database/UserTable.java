@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import com.bajaj.dto.UserDTO;
 import com.bajaj.utility.CommonUtility;
+import com.mysql.jdbc.PreparedStatement;
 
 public class UserTable {
 
@@ -29,22 +30,32 @@ public class UserTable {
 	 * insert data by passing User object
 	 */
 	
-	public void insertUserData(UserDTO pUser) {
+	public Boolean insertUserData(UserDTO pUser) {
 		
+		Boolean lInserted = false;
 		try {
 			Connection lConnection = CommonUtility.getSqlConnection();
 			java.sql.Statement lSmt = lConnection.createStatement();
 			
 			lSmt.executeQuery(CREATE_TABLE_QUERY);
 			
-			String lQuery = "INSER INTO "+SQL_USER_TABLENAME+" VALUES ( '"+pUser.get_id()+"' , '"+pUser.get_userName()+"' , '"+pUser.get_password()+"' ,"
+			String lQuery = "INSERT INTO "+SQL_USER_TABLENAME+" VALUES ( '"+pUser.get_id()+"' , '"+pUser.get_userName()+"' , '"+pUser.get_password()+"' ,"
 					+ "'"+pUser.get_firstName()+"' , '"+pUser.get_lastName()+"' , '"+pUser.get_usertype()+"')";
-			lSmt.executeQuery(lQuery);
 			
+			PreparedStatement lPreparedStatment = (PreparedStatement) lConnection.prepareStatement(lQuery);
+			int lCount = lPreparedStatment.executeUpdate(); 
+			System.out.println("Rows updated - "+lCount);
+			if(lCount > 0){
+				lInserted = true;
+			} else {
+				lInserted = false;
+			}
 			lConnection.close();
+			CommonUtility.deRegistarDriverManager();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return lInserted;
 	}
 	
 	
@@ -69,7 +80,8 @@ public class UserTable {
 				 lPassword = lResultSet.getString(PASSWORD);
 			 }
 			 lConnection.close();
-			
+			 CommonUtility.deRegistarDriverManager();
+			 
 			 if(pPassword.equals(lPassword)){
 				lLoginExist = true;
 			 } else {
@@ -82,13 +94,14 @@ public class UserTable {
 		return lLoginExist;
 	}
 	
+	
 	/**
 	 * @author abhishek
 	 * @param pUserName
 	 * @return User Object on passing username
 	 */
 	
-	public UserDTO getUserDataFromUserId(String pUserName) {
+	public UserDTO getUserDataFromUserName(String pUserName) {
 		
 		UserDTO lUserData = new UserDTO();
 		try {
@@ -106,10 +119,37 @@ public class UserTable {
 				lUserData.set_id(lResultSet.getString(ID));
 			 }
 			 lConnection.close();
+			 CommonUtility.deRegistarDriverManager();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return lUserData;
 	}
+	
+	
+	public String getPasswordFromUsername(String pUserName) {
+		
+		String lPassword 		= "";
+		try {
+			Connection lConnection = CommonUtility.getSqlConnection();
+			java.sql.Statement lSmt = lConnection.createStatement();
+			
+			lSmt.executeQuery(CREATE_TABLE_QUERY);
+			String lQuery 		 = "SELECT "+PASSWORD+" FROM "+SQL_USER_TABLENAME+" WHERE "+USERNAME+" = "+pUserName+")";
+			ResultSet lResultSet = lSmt.executeQuery(lQuery);
+			while (lResultSet.next()) {
+				 lPassword = lResultSet.getString(PASSWORD);
+			 }
+			 lConnection.close();
+			 CommonUtility.deRegistarDriverManager();
+			 
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lPassword;
+	}
+	
+	
+	
 }

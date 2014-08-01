@@ -17,6 +17,21 @@
 
   
   <mvc:annotation-driven/>
+  
+  <bean id="contentNegotiationManager"
+  class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+  <property name="favorPathExtension" value="false" />
+  <property name="favorParameter" value="false" />
+  <property name="defaultContentType" value="application/json" />
+  <property name="mediaTypes">
+   <value>
+    json=application/json
+    xml=application/xml
+   </value>
+  </property>
+ </bean> 
+  
+  
   <bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix">
