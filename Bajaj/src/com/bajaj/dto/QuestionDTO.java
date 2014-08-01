@@ -2,36 +2,46 @@ package com.bajaj.dto;
 
 public class QuestionDTO {
 
-	private String _id;
-	private String _question;	
-	private String _answer;
-	private String _cateory;
+	private String id;
+	private String question;	
+	private String answer;
+	private String cateory;
+	private String frequent;
 	
 	
-	public String get_id() {
-		return _id;
+	public String getId() {
+		return id;
 	}
-	public void set_id(String _id) {
-		this._id = _id;
+	public void setId(String id) {
+		this.id = id;
 	}
-	public String get_question() {
-		return _question;
+	public String getQuestion() {
+		return question;
 	}
-	public void set_question(String _question) {
-		this._question = _question;
+	public void setQuestion(String question) {
+		this.question = question;
 	}
-	public String get_answer() {
-		return _answer;
+	public String getAnswer() {
+		return answer;
 	}
-	public void set_answer(String _answer) {
-		this._answer = _answer;
+	public void setAnswer(String answer) {
+		this.answer = answer;
 	}
-	public String get_category() {
-		return _cateory;
+	public String getCateory() {
+		return cateory;
 	}
-	public void set_category(String _cateory) {
-		this._cateory = _cateory;
+	public void setCateory(String cateory) {
+		this.cateory = cateory;
 	}
+	public String getFrequent() {
+		return frequent;
+	}
+	public void setFrequent(String frequent) {
+		this.frequent = frequent;
+	}
+	
+	
+	
 	
 }
 

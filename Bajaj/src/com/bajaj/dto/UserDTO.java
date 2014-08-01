@@ -2,52 +2,53 @@ package com.bajaj.dto;
 
 public class UserDTO {
 	
-		private String _id;
-		private String _usertype;	
-		private String _firstName;
-		private String _lastName;
-		private String _userName;
-		private String _password;
+		private String id;
+		private String usertype;	
+		private String firstName;
+		private String lastName;
+		private String userName;
+		private String password;
 		
 		
-		public String get_id() {
-			return _id;
+		
+		public String getId() {
+			return id;
 		}
-		public void set_id(String _id) {
-			this._id = _id;
+		public void setId(String id) {
+			this.id = id;
 		}
-		public String get_usertype() {
-			return _usertype;
+		public String getUsertype() {
+			return usertype;
 		}
-		public void set_usertype(String _usertype) {
-			this._usertype = _usertype;
+		public void setUsertype(String usertype) {
+			this.usertype = usertype;
 		}
-		public String get_firstName() {
-			return _firstName;
+		public String getFirstName() {
+			return firstName;
 		}
-		public void set_firstName(String _firstName) {
-			this._firstName = _firstName;
+		public void setFirstName(String firstName) {
+			this.firstName = firstName;
 		}
-		public String get_lastName() {
-			return _lastName;
+		public String getLastName() {
+			return lastName;
 		}
-		public void set_lastName(String _lastName) {
-			this._lastName = _lastName;
+		public void setLastName(String lastName) {
+			this.lastName = lastName;
+		}
+		public String getUserName() {
+			return userName;
+		}
+		public void setUserName(String userName) {
+			this.userName = userName;
+		}
+		public String getPassword() {
+			return password;
+		}
+		public void setPassword(String password) {
+			this.password = password;
 		}
 		
-		public String get_password() {
-			return _password;
-		}
-		public void set_password(String _password) {
-			this._password = _password;
-		}
 		
-		public String get_userName() {
-			return _userName;
-		}
-		public void set_userName(String _userName) {
-			this._userName = _userName;
-		}
-		
+	
 	}
 

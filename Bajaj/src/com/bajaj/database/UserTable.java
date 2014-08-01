@@ -39,8 +39,8 @@ public class UserTable {
 			
 			lSmt.executeQuery(CREATE_TABLE_QUERY);
 			
-			String lQuery = "INSERT INTO "+SQL_USER_TABLENAME+" VALUES ( '"+pUser.get_id()+"' , '"+pUser.get_userName()+"' , '"+pUser.get_password()+"' ,"
-					+ "'"+pUser.get_firstName()+"' , '"+pUser.get_lastName()+"' , '"+pUser.get_usertype()+"')";
+			String lQuery = "INSERT INTO "+SQL_USER_TABLENAME+" VALUES ( '"+pUser.getId()+"' , '"+pUser.getUserName()+"' , '"+pUser.getPassword()+"' ,"
+					+ "'"+pUser.getFirstName()+"' , '"+pUser.getLastName()+"' , '"+pUser.getUsertype()+"')";
 			
 			PreparedStatement lPreparedStatment = (PreparedStatement) lConnection.prepareStatement(lQuery);
 			int lCount = lPreparedStatment.executeUpdate(); 
@@ -113,10 +113,10 @@ public class UserTable {
 			ResultSet lResultSet = lSmt.executeQuery(lQuery);
 			
 			while (lResultSet.next()) {
-				lUserData.set_firstName(lResultSet.getString(FIRST_NAME));
-				lUserData.set_lastName(lResultSet.getString(LAST_NAME));
-				lUserData.set_usertype(lResultSet.getString(USER_TYPE));
-				lUserData.set_id(lResultSet.getString(ID));
+				lUserData.setFirstName(lResultSet.getString(FIRST_NAME));
+				lUserData.setLastName(lResultSet.getString(LAST_NAME));
+				lUserData.setUsertype(lResultSet.getString(USER_TYPE));
+				lUserData.setId(lResultSet.getString(ID));
 			 }
 			 lConnection.close();
 			 CommonUtility.deRegistarDriverManager();

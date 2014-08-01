@@ -16,10 +16,11 @@ public class QuestionTable {
 	private static String QUESTION						= "_question";
 	private static String ANSWER   						= "_answer";	
 	private static String CATEGORY 						= "_category";
+	private static String FREQUENT 						= "_frequent";
 	
 	
 	private static String CREATE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS "+SQL_QUES_TABLENAME+" ("+QUES_ID+" VARCHAR(50) , "+QUESTION+" VARCHAR(1000) ,"
-												+ " "+ANSWER+" VARCHAR(1000),"+CATEGORY+" VARCHAR(50))";
+												+ " "+ANSWER+" VARCHAR(1000),"+CATEGORY+" VARCHAR(50) "+FREQUENT+" VARCHAR(25))";
 	
 	
 	/**
@@ -36,8 +37,8 @@ public class QuestionTable {
 			
 			lSmt.executeQuery(CREATE_TABLE_QUERY);
 			
-			String lQuery = "INSERT INTO "+SQL_QUES_TABLENAME+" VALUES ( '"+pQuesAnswer.get_id()+"' , '"+pQuesAnswer.get_question()+"' , '"+pQuesAnswer.get_answer()+"' ,"
-					+ "'"+pQuesAnswer.get_category()+"')";
+			String lQuery = "INSERT INTO "+SQL_QUES_TABLENAME+" VALUES ( '"+pQuesAnswer.getId()+"' , '"+pQuesAnswer.getQuestion()+"' , '"+pQuesAnswer.getAnswer()+"' ,"
+					+ "'"+pQuesAnswer.getCateory()+"'"+ "'"+pQuesAnswer.getFrequent()+"')";
 			
 			PreparedStatement lPreparedStatment = (PreparedStatement) lConnection.prepareStatement(lQuery);
 			int lCount = lPreparedStatment.executeUpdate(); 
@@ -73,9 +74,9 @@ public class QuestionTable {
 			ResultSet lResultSet = lSmt.executeQuery(lQuery);
 			
 			while (lResultSet.next()) {
-				lQuesData.set_answer(lResultSet.getString(ANSWER));
-				lQuesData.set_category(lResultSet.getString(CATEGORY));
-				lQuesData.set_id(lResultSet.getString(QUES_ID));
+				lQuesData.setAnswer(lResultSet.getString(ANSWER));
+				lQuesData.setCateory(lResultSet.getString(CATEGORY));
+				lQuesData.setId(lResultSet.getString(QUES_ID));
 			 }
 			 lConnection.close();
 			 CommonUtility.deRegistarDriverManager();
@@ -115,4 +116,30 @@ public class QuestionTable {
 		
 		return lDeleted;
 	}
+	
+	
+	public Boolean updateQuestionById(QuestionDTO pQuesDetail) {
+		
+		Boolean lUpdate = false;
+		try {
+			Connection lConnection = CommonUtility.getSqlConnection();
+			String lQuery 		 = "UPDATE "+SQL_QUES_TABLENAME+" SET "+QUES_ID+" = '"+pQuesDetail.getId()+"' , "+QUESTION+" = '"+pQuesDetail.getQuestion()+"' ,"
+					+ ANSWER + " = '"+pQuesDetail.getAnswer()+"', "+CATEGORY+" = '"+pQuesDetail.getCateory()+"', "+FREQUENT+" = '"+pQuesDetail.getFrequent()+"'";
+			PreparedStatement lPreparedStatement = (PreparedStatement) lConnection.prepareStatement(lQuery);
+			int lUpdateCount = lPreparedStatement.executeUpdate();
+			
+			if(lUpdateCount>0) {
+				lUpdate = true;
+			} else {
+				lUpdate = false;
+			}
+			lConnection.close();
+			CommonUtility.deRegistarDriverManager();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return lUpdate;
+	}
 }
+

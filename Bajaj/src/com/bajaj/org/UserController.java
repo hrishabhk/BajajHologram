@@ -7,9 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.bajaj.constant.GlobalVariables;
 import com.bajaj.database.QuestionTable;
 import com.bajaj.database.UserTable;
 import com.bajaj.dto.QuestionDTO;
@@ -58,21 +61,21 @@ public class UserController {
 	   String lDataToPost 							="";
 	   
 	   try {
-		   String lUserName							= (String)pLogindata.get("username");
-		   String lPassword 						= (String)pLogindata.get("password");
+		   String lUserName							= (String)pLogindata.get(GlobalVariables.USER_NAME);
+		   String lPassword 						= (String)pLogindata.get(GlobalVariables.PASSWORD);
 			
 		   if(!lUserName.equals("") && !lPassword.equals("")) {
 			   
 			   Boolean lValideUser = new UserTable().validateUserLogin(lUserName , lPassword);
 			   if(lValideUser) {
-				   UserDTO lUser = new UserTable().getUserDataFromUserName((String)pLogindata.get("username"));
-				   lUserDetail.put("response", true);
-				   lUserDetail.put("firstname", lUser.get_firstName());
-				   lUserDetail.put("lastname", lUser.get_lastName());
-				   lUserDetail.put("usertype", lUser.get_usertype());
-				   lUserDetail.put("id", lUser.get_id());
+				   UserDTO lUser = new UserTable().getUserDataFromUserName((String)pLogindata.get(GlobalVariables.USER_NAME));
+				   lUserDetail.put(GlobalVariables.RESPONSE, true);
+				   lUserDetail.put(GlobalVariables.FIRST_NAME, lUser.getFirstName());
+				   lUserDetail.put(GlobalVariables.LAST_NAME, lUser.getLastName());
+				   lUserDetail.put(GlobalVariables.USER_TYPE, lUser.getUsertype());
+				   lUserDetail.put(GlobalVariables.ID, lUser.getId());
 			   } else {
-				   lUserDetail.put("response", false);
+				   lUserDetail.put(GlobalVariables.RESPONSE, false);
 			   }
 		   }
 		   lDataToPost = mGson.toJson(lUserDetail);
@@ -92,19 +95,19 @@ public class UserController {
 	   String lUuidUser 							= "u"+UUID.randomUUID().toString();
 	   
 	   try {
-		   String lUserName							= (String)pSignUpdata.get("username");
-		   String lPassword 						= (String)pSignUpdata.get("password");
-		   String lFirstName						= (String)pSignUpdata.get("firstname");
-		   String lLastName 						= (String)pSignUpdata.get("lastname");
-		   String lUserType 						= (String)pSignUpdata.get("usertype");
+		   String lUserName							= (String)pSignUpdata.get(GlobalVariables.USER_NAME);
+		   String lPassword 						= (String)pSignUpdata.get(GlobalVariables.PASSWORD);
+		   String lFirstName						= (String)pSignUpdata.get(GlobalVariables.FIRST_NAME);
+		   String lLastName 						= (String)pSignUpdata.get(GlobalVariables.LAST_NAME);
+		   String lUserType 						= (String)pSignUpdata.get(GlobalVariables.USER_TYPE);
 			
 		   if(!lUserName.equals("") && !lPassword.equals("")) {
-			   lUserDetail.set_firstName(lFirstName);
-			   lUserDetail.set_lastName(lLastName);
-			   lUserDetail.set_userName(lUserName);
-			   lUserDetail.set_password(lPassword);
-			   lUserDetail.set_usertype(lUserType);
-			   lUserDetail.set_id(lUuidUser);
+			   lUserDetail.setFirstName(lFirstName);
+			   lUserDetail.setLastName(lLastName);
+			   lUserDetail.setUserName(lUserName);
+			   lUserDetail.setPassword(lPassword);
+			   lUserDetail.setUsertype(lUserType);
+			   lUserDetail.setId(lUuidUser);
 			   lSignUpSuccess = new UserTable().insertUserData(lUserDetail);
 		   } else {
 			   lSignUpSuccess = false;
@@ -118,7 +121,7 @@ public class UserController {
    
    
    
-   @RequestMapping(value="/search.do")
+   @RequestMapping(value="/searchQuestion.do", method = RequestMethod.GET)
    public String searchQuestion(HttpServletRequest req, HttpServletResponse resp, @RequestBody String pQuestionStroke) {
 	  
 	   String lDataToPost							 = "";
@@ -129,13 +132,14 @@ public class UserController {
 			   
 			   QuestionDTO lQuesDetail = new QuestionTable().getQuesDetailFromQuesStroke(pQuestionStroke);
 			   if(lQuesDetail != null) {
-				   lQuestiomnDetail.put("response", true);
-				   lQuestiomnDetail.put("firstname", lQuesDetail.get_question());
-				   lQuestiomnDetail.put("lastname", lQuesDetail.get_answer());
-				   lQuestiomnDetail.put("usertype", lQuesDetail.get_category());
-				   lQuestiomnDetail.put("id", lQuesDetail.get_id());
+				   lQuestiomnDetail.put(GlobalVariables.RESPONSE, true);
+				   lQuestiomnDetail.put(GlobalVariables.QUESTION, lQuesDetail.getQuestion());
+				   lQuestiomnDetail.put(GlobalVariables.ANSWER, lQuesDetail.getAnswer());
+				   lQuestiomnDetail.put(GlobalVariables.CATEGORY, lQuesDetail.getCateory());
+				   lQuestiomnDetail.put(GlobalVariables.ID, lQuesDetail.getId());
+				   lQuestiomnDetail.put(GlobalVariables.FREQUENT, lQuesDetail.getFrequent());
 			   } else {
-				   lQuestiomnDetail.put("response", false);
+				   lQuestiomnDetail.put(GlobalVariables.RESPONSE, false);
 			   }
 		   }
 		   lDataToPost = mGson.toJson(lQuestiomnDetail);
@@ -145,7 +149,7 @@ public class UserController {
 	   return lDataToPost;
    }
    
-   
+   @RequestMapping(value="/questionAnswer.do", method = RequestMethod.POST)
    public Boolean addQuestion(HttpServletRequest req, HttpServletResponse resp, @RequestBody HashMap<String, Object> pQuesdata) {
 	  
 	   Boolean lAdded     							= false;
@@ -154,10 +158,11 @@ public class UserController {
 		   QuestionDTO  lQuesAns 					= new QuestionDTO();
 		   
 		   if(pQuesdata != null) {
-			   lQuesAns.set_id(lUuidQues);
-			   lQuesAns.set_question((String) pQuesdata.get("question"));
-			   lQuesAns.set_answer((String) pQuesdata.get("answer"));
-			   lQuesAns.set_category((String) pQuesdata.get("category"));
+			   lQuesAns.setId(lUuidQues);
+			   lQuesAns.setQuestion((String) pQuesdata.get(GlobalVariables.QUESTION));
+			   lQuesAns.setAnswer((String) pQuesdata.get(GlobalVariables.ANSWER));
+			   lQuesAns.setCateory((String) pQuesdata.get(GlobalVariables.CATEGORY));
+			   lQuesAns.setFrequent((String) pQuesdata.get(GlobalVariables.FREQUENT));
 			   lAdded = new QuestionTable().insertQuesData(lQuesAns);
 		   } else {
 			   lAdded = false;
@@ -169,8 +174,8 @@ public class UserController {
 	return lAdded;
    }
    
-   
-   public Boolean delQuestion(HttpServletRequest req, HttpServletResponse resp, @RequestBody String pQuesId) {
+   @RequestMapping(value="/questionAnswer.do/{questionId}", method = RequestMethod.DELETE)
+   public Boolean delQuestion(HttpServletRequest req, HttpServletResponse resp, @PathVariable(value="questionId") String pQuesId) {
 		  Boolean lIsDeleted 		= false;
 	   try {
 		   if(!pQuesId.equals("")) {
