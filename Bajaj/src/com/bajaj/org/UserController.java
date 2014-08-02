@@ -1,6 +1,11 @@
 package com.bajaj.org;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,12 +16,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.bajaj.constant.GlobalVariables;
 import com.bajaj.database.QuestionTable;
 import com.bajaj.database.UserTable;
 import com.bajaj.dto.QuestionDTO;
 import com.bajaj.dto.UserDTO;
+import com.bajaj.utility.CommonUtility;
 import com.google.gson.Gson;
 
 
@@ -30,22 +38,22 @@ public class UserController {
 	@RequestMapping(value="/index.do")
 	public String homePage(HttpServletRequest req, HttpServletResponse resp) {
 		try {
-//			Connection lConnection = CommonUtility.getSqlConnection();
-//			java.sql.Statement lSmt = lConnection.createStatement();
-//			
-//			String lQuery 		 = "INSERT INTO Persons VALUES (1 ,'kumar', 'abhi' , 'velachery' , 'chennai')";
-//			PreparedStatement lPreparedStatment = (PreparedStatement) lConnection.prepareStatement(lQuery);
-//			int lCount = lPreparedStatment.executeUpdate(); 
-//			System.out.println("count updated -" +lCount);
-//			
-//			String lQuery2 		 = "SELECT * FROM Persons WHERE LastName LIKE '%kum%'";
-//			ResultSet lResultSet = lSmt.executeQuery(lQuery2);
-//			
-//			while (lResultSet.next()) {
-//				System.out.println("name - "+lResultSet.getString("FirstName"));
-//			 }
-//			
-//			 lConnection.close();
+			Connection lConnection = CommonUtility.getSqlConnection();
+			java.sql.Statement lSmt = lConnection.createStatement();
+			
+			String lQuery 		 = "INSERT INTO Persons VALUES (1 ,'kumar', 'abhi' , 'velachery' , 'chennai')";
+			PreparedStatement lPreparedStatment = (PreparedStatement) lConnection.prepareStatement(lQuery);
+			int lCount = lPreparedStatment.executeUpdate(); 
+			System.out.println("count updated -" +lCount);
+			
+			String lQuery2 		 = "SELECT * FROM Persons WHERE LastName LIKE '%kum%'";
+			ResultSet lResultSet = lSmt.executeQuery(lQuery2);
+			
+			while (lResultSet.next()) {
+				System.out.println("name - "+lResultSet.getString("firstName"));
+			 }
+			
+			 lConnection.close();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -54,7 +62,7 @@ public class UserController {
 	}
 
    @RequestMapping(value="/login.do")
-   public String loginUser(HttpServletRequest req, HttpServletResponse resp, @RequestBody HashMap<String, Object> pLogindata) {
+   public  @ResponseBody String loginUser(HttpServletRequest req, HttpServletResponse resp, @RequestBody HashMap<String, Object> pLogindata) {
 	
 	   HashMap<String, Object> lUserDetail  		= new HashMap<String, Object>();
 	   String lDataToPost 							="";
@@ -87,7 +95,7 @@ public class UserController {
    
    
    @RequestMapping(value="/signup.do")
-   public Boolean signUpUser(HttpServletRequest req, HttpServletResponse resp, @RequestBody HashMap<String, Object> pSignUpdata) {
+   public @ResponseBody Boolean signUpUser(HttpServletRequest req, HttpServletResponse resp, @RequestBody HashMap<String, Object> pSignUpdata) {
 	
 	   UserDTO lUserDetail  						= new UserDTO();
 	   Boolean lSignUpSuccess						= false;
@@ -121,55 +129,36 @@ public class UserController {
    
    
    @RequestMapping(value="/searchQuestion.do", method = RequestMethod.GET)
-   public String searchQuestion(HttpServletRequest req, HttpServletResponse resp, @RequestBody String pQuestionStroke) {
-	  
-	   String lDataToPost							 = "";
-	   HashMap<String, Object> lQuestiomnDetail      = new HashMap<String, Object>();
-	   
-	   try {
-		if(!pQuestionStroke.equals("")) {
-			   
-			   QuestionDTO lQuesDetail = new QuestionTable().getQuesDetailFromQuesStroke(pQuestionStroke);
-			   if(lQuesDetail != null) {
-				   lQuestiomnDetail.put(GlobalVariables.RESPONSE, true);
-				   lQuestiomnDetail.put(GlobalVariables.QUESTION, lQuesDetail.getQuestion());
-				   lQuestiomnDetail.put(GlobalVariables.ANSWER, lQuesDetail.getAnswer());
-				   lQuestiomnDetail.put(GlobalVariables.CATEGORY, lQuesDetail.getCateory());
-				   lQuestiomnDetail.put(GlobalVariables.ID, lQuesDetail.getId());
-				   lQuestiomnDetail.put(GlobalVariables.FREQUENT, lQuesDetail.getFrequent());
-			   } else {
-				   lQuestiomnDetail.put(GlobalVariables.RESPONSE, false);
-			   }
-		   }
-		   lDataToPost = mGson.toJson(lQuestiomnDetail);
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-	   return lDataToPost;
+   public @ResponseBody String searchQuestion(HttpServletRequest req, HttpServletResponse resp, @RequestParam("query") String pQuestionStroke) {
+	   List<QuestionDTO> responseList = null;
+		if(!pQuestionStroke.equals(""))
+		{
+			responseList =  new QuestionTable().getQuesDetailFromQuesStroke(pQuestionStroke);
+			if(responseList.isEmpty())
+			{
+				QuestionDTO defaultResult = new QuestionDTO();
+				defaultResult.setId("none");
+				defaultResult.setAnswer("");
+				defaultResult.setQuestion("no result Found");
+				defaultResult.setCateory("none");
+				responseList.add(defaultResult);
+			}
+		}
+		   
+	   return mGson.toJson(responseList);
    }
    
-   
-   @RequestMapping(value="/searchQuestion.do", method = RequestMethod.GET)
-   public String getAllFrequentQuestion(HttpServletRequest req, HttpServletResponse resp) {
+   @RequestMapping(value="/questionAnswer.do", method = RequestMethod.GET)
+   public String getAllFrequentQuestion(HttpServletRequest req, HttpServletResponse resp, @RequestParam String lIndex) {
 	  
-	   String lDataToPost							 = "";
-	   String lIndex								 = "";
-	   HashMap<String, Object> lQuestiomnDetail      = new HashMap<String, Object>();
+	   String lDataToPost							 		  = "";
 	   
 	   try {
 		if(!lIndex.equals("")) {
 			lIndex = "0";
-		}
-			   QuestionDTO lQuesDetail = new QuestionTable().getAllFrequentQuestion(lIndex);
-			   if(lQuesDetail != null) {
-				   lQuestiomnDetail.put(GlobalVariables.RESPONSE, true);
-				   lQuestiomnDetail.put(GlobalVariables.QUESTION, lQuesDetail.getQuestion());
-				   lQuestiomnDetail.put(GlobalVariables.ANSWER, lQuesDetail.getAnswer());
-				   lQuestiomnDetail.put(GlobalVariables.CATEGORY, lQuesDetail.getCateory());
-				   lQuestiomnDetail.put(GlobalVariables.ID, lQuesDetail.getId());
-				   lQuestiomnDetail.put(GlobalVariables.FREQUENT, lQuesDetail.getFrequent());
-			   } 
-		   lDataToPost = mGson.toJson(lQuestiomnDetail);
+		 }
+		   List<QuestionDTO> lQuesDetailList = new QuestionTable().getAllFrequentQuestion(lIndex);
+		   lDataToPost = mGson.toJson(lQuesDetailList);
 	} catch (Exception e) {
 		e.printStackTrace();
 	}
@@ -177,46 +166,45 @@ public class UserController {
    }
    
    @RequestMapping(value="/questionAnswer.do", method = RequestMethod.POST)
-   public Boolean addQuestion(HttpServletRequest req, HttpServletResponse resp, @RequestBody HashMap<String, Object> pQuesdata) {
+   public  @ResponseBody String addQuestion(HttpServletRequest req, HttpServletResponse resp, @RequestBody String pQuesdata) {
 	  
-	   Boolean lAdded     							= false;
-	   try {
-		   String lUuidQues 						= "q"+UUID.randomUUID().toString();
-		   QuestionDTO  lQuesAns 					= new QuestionDTO();
+	   QuestionDTO lAdded     							= null;
+	   try 
+	   {
+		   	String lUuidQues 		= "q"+UUID.randomUUID().toString();
+		   	lAdded 					= mGson.fromJson(pQuesdata, QuestionDTO.class);
+		   	
+			lAdded.setId(lUuidQues);
+			lAdded = new QuestionTable().insertQuesData(lAdded);
 		   
-		   if(pQuesdata != null) {
-			   lQuesAns.setId(lUuidQues);
-			   lQuesAns.setQuestion((String) pQuesdata.get(GlobalVariables.QUESTION));
-			   lQuesAns.setAnswer((String) pQuesdata.get(GlobalVariables.ANSWER));
-			   lQuesAns.setCateory((String) pQuesdata.get(GlobalVariables.CATEGORY));
-			   lQuesAns.setFrequent((String) pQuesdata.get(GlobalVariables.FREQUENT));
-			   lAdded = new QuestionTable().insertQuesData(lQuesAns);
-		   } else {
-			   lAdded = false;
-		   }
+	   	} 
+	   catch (Exception e) {
 		   
-	} catch (Exception e) {
 		e.printStackTrace();
-	}
-	return lAdded;
+	   }
+	return mGson.toJson(lAdded);
    }
    
    @RequestMapping(value="/questionAnswer.do/{questionId}", method = RequestMethod.DELETE)
-   public Boolean delQuestion(HttpServletRequest req, HttpServletResponse resp, @PathVariable(value="questionId") String pQuesId) {
+   public  @ResponseBody String delQuestion(HttpServletRequest req, HttpServletResponse resp, @PathVariable(value="questionId") String pQuesId) {
 		  Boolean lIsDeleted 		= false;
 	   try {
 		   if(!pQuesId.equals("")) {
 			   lIsDeleted = new QuestionTable().deleteQuestionById(pQuesId);
+			   if(!lIsDeleted)
+			   {
+				   pQuesId = null;
+			   }
 		   }
 	} catch (Exception e) {
 		e.printStackTrace();
 	}
-	return lIsDeleted;
+	return pQuesId;
    }
 
 
 @RequestMapping(value="/getpassword.do")
-public String getPasswordByUserName(HttpServletRequest req, HttpServletResponse resp, @RequestBody String pUserName) {
+public   @ResponseBody  String getPasswordByUserName(HttpServletRequest req, HttpServletResponse resp, @RequestBody String pUserName) {
 	
     String lPassword = "";
 	try {

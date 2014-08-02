@@ -3,6 +3,8 @@ package com.bajaj.database;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.bajaj.dto.QuestionDTO;
 import com.bajaj.utility.CommonUtility;
@@ -29,8 +31,7 @@ public class QuestionTable {
 	 *  insert QuestionData by passing Question Object
 	 */
 	
-	public Boolean insertQuesData(QuestionDTO pQuesAnswer) {
-		Boolean lInserted = false;
+	public QuestionDTO insertQuesData(QuestionDTO pQuesAnswer) {
 		try {
 			Connection lConnection = CommonUtility.getSqlConnection();
 			java.sql.Statement lSmt = lConnection.createStatement();
@@ -44,16 +45,20 @@ public class QuestionTable {
 			int lCount = lPreparedStatment.executeUpdate(); 
 			System.out.println("Rows inserted - "+lCount);
 			if(lCount > 0){
-				lInserted = true;
-			} else {
-				lInserted = false;
+				
+			} else 
+			{
+				pQuesAnswer = null;
 			}
 			lConnection.close();
 			CommonUtility.deRegistarDriverManager();
-		} catch (SQLException e) {
+		} 
+		catch (SQLException e) 
+		{
+			pQuesAnswer = null;
 			e.printStackTrace();
 		}
-		return lInserted;
+		return pQuesAnswer;
 	}
 	
 	
@@ -63,27 +68,29 @@ public class QuestionTable {
 	 * @return Question Object on passing Ques Stroke word.
 	 */
 	
-	public QuestionDTO getQuesDetailFromQuesStroke(String pQuestionStroke) {
+	public List<QuestionDTO> getQuesDetailFromQuesStroke(String pQuestionStroke) {
 		
-		QuestionDTO lQuesData = new QuestionDTO();
+		List<QuestionDTO> resultList = null;
 		try {
 			Connection lConnection = CommonUtility.getSqlConnection();
 			java.sql.Statement lSmt = lConnection.createStatement();
 			
 			String lQuery 		 = "SELECT * FROM "+SQL_QUES_TABLENAME+" WHERE "+QUESTION+" LIKE '%"+pQuestionStroke+"%'";
 			ResultSet lResultSet = lSmt.executeQuery(lQuery);
-			
+			resultList = new ArrayList<QuestionDTO>();
 			while (lResultSet.next()) {
+				QuestionDTO lQuesData = new QuestionDTO();
 				lQuesData.setAnswer(lResultSet.getString(ANSWER));
 				lQuesData.setCateory(lResultSet.getString(CATEGORY));
 				lQuesData.setId(lResultSet.getString(QUES_ID));
+				resultList.add(lQuesData);
 			 }
 			 lConnection.close();
 			 CommonUtility.deRegistarDriverManager();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return lQuesData;
+		return resultList;
 	}
 	
 	/**
@@ -92,9 +99,9 @@ public class QuestionTable {
 	 * @return
 	 */
 	
-   public QuestionDTO getAllFrequentQuestion(String pIndex) {
+public List<QuestionDTO> getAllFrequentQuestion(String pIndex) {
 		
-		QuestionDTO lQuesData = new QuestionDTO();
+		List<QuestionDTO> lQuesDataList = new  ArrayList<>();
 		try {
 			Connection lConnection = CommonUtility.getSqlConnection();
 			java.sql.Statement lSmt = lConnection.createStatement();
@@ -103,16 +110,18 @@ public class QuestionTable {
 			ResultSet lResultSet = lSmt.executeQuery(lQuery);
 			
 			while (lResultSet.next()) {
+				QuestionDTO lQuesData = new QuestionDTO();
 				lQuesData.setAnswer(lResultSet.getString(ANSWER));
 				lQuesData.setCateory(lResultSet.getString(CATEGORY));
 				lQuesData.setId(lResultSet.getString(QUES_ID));
+				lQuesDataList.add(lQuesData);
 			 }
 			 lConnection.close();
 			 CommonUtility.deRegistarDriverManager();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return lQuesData;
+		return lQuesDataList;
 	}
 	
 	
