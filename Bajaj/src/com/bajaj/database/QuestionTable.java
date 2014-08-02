@@ -83,6 +83,7 @@ public class QuestionTable {
 				lQuesData.setAnswer(lResultSet.getString(ANSWER));
 				lQuesData.setCateory(lResultSet.getString(CATEGORY));
 				lQuesData.setId(lResultSet.getString(QUES_ID));
+				lQuesData.setQuestion(lResultSet.getString(QUESTION));
 				resultList.add(lQuesData);
 			 }
 			 lConnection.close();
@@ -99,7 +100,7 @@ public class QuestionTable {
 	 * @return
 	 */
 	
-public List<QuestionDTO> getAllFrequentQuestion(String pIndex) {
+   public List<QuestionDTO> getAllFrequentQuestion(String pIndex) {
 		
 		List<QuestionDTO> lQuesDataList = new  ArrayList<>();
 		try {
@@ -132,19 +133,17 @@ public List<QuestionDTO> getAllFrequentQuestion(String pIndex) {
 	 * @return
 	 */
 	
-	public Boolean deleteQuestionById(String pQuesId) {
+	public String deleteQuestionById(String pQuesId) {
 		
-		Boolean lDeleted = false;
+		
 		try {
 			Connection lConnection = CommonUtility.getSqlConnection();
 			String lQuery 		 = "DELETE FROM "+SQL_QUES_TABLENAME+" WHERE "+QUES_ID+" = '"+pQuesId+"'";
 			PreparedStatement lPreparedStatement = (PreparedStatement) lConnection.prepareStatement(lQuery);
 			int lDeleteCount = lPreparedStatement.executeUpdate();
 			
-			if(lDeleteCount>0) {
-				lDeleted = true;
-			} else {
-				lDeleted = false;
+			if(lDeleteCount==0) {
+				pQuesId = null;
 			}
 			lConnection.close();
 			CommonUtility.deRegistarDriverManager();
@@ -152,7 +151,7 @@ public List<QuestionDTO> getAllFrequentQuestion(String pIndex) {
 			e.printStackTrace();
 		}
 		
-		return lDeleted;
+		return pQuesId;
 	}
 	/**
 	 * @author abhishek
@@ -160,28 +159,25 @@ public List<QuestionDTO> getAllFrequentQuestion(String pIndex) {
 	 * @return
 	 */
 	
-	public Boolean updateQuestionById(QuestionDTO pQuesDetail) {
+	public QuestionDTO updateQuestionById(QuestionDTO pQuesDetail) {
 		
-		Boolean lUpdate = false;
 		try {
 			Connection lConnection = CommonUtility.getSqlConnection();
-			String lQuery 		 = "UPDATE "+SQL_QUES_TABLENAME+" SET "+QUES_ID+" = '"+pQuesDetail.getId()+"' , "+QUESTION+" = '"+pQuesDetail.getQuestion()+"' ,"
-					+ ANSWER + " = '"+pQuesDetail.getAnswer()+"', "+CATEGORY+" = '"+pQuesDetail.getCateory()+"', "+FREQUENT+" = '"+pQuesDetail.getFrequent()+"'";
+			String lQuery 		 = "UPDATE "+SQL_QUES_TABLENAME+" SET "+QUESTION+" = '"+pQuesDetail.getQuestion()+"' ,"
+					+ ANSWER + " = '"+pQuesDetail.getAnswer()+"', "+CATEGORY+" = '"+pQuesDetail.getCateory()+"', "+FREQUENT+" = '"+pQuesDetail.getFrequent()+"' WHERE "+QUES_ID+" = '"+pQuesDetail.getId()+"'";
 			PreparedStatement lPreparedStatement = (PreparedStatement) lConnection.prepareStatement(lQuery);
 			int lUpdateCount = lPreparedStatement.executeUpdate();
 			
-			if(lUpdateCount>0) {
-				lUpdate = true;
-			} else {
-				lUpdate = false;
-			}
+			if(lUpdateCount==0) {
+				pQuesDetail = null;
+			} 
 			lConnection.close();
 			CommonUtility.deRegistarDriverManager();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return lUpdate;
+		return pQuesDetail;
 	}
 	
 	

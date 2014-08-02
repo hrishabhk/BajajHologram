@@ -1,9 +1,7 @@
 package com.bajaj.org;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +24,7 @@ import com.bajaj.dto.QuestionDTO;
 import com.bajaj.dto.UserDTO;
 import com.bajaj.utility.CommonUtility;
 import com.google.gson.Gson;
+import com.mysql.jdbc.PreparedStatement;
 
 
 
@@ -187,24 +186,35 @@ public class UserController {
    
    @RequestMapping(value="/questionAnswer.do/{questionId}", method = RequestMethod.DELETE)
    public  @ResponseBody String delQuestion(HttpServletRequest req, HttpServletResponse resp, @PathVariable(value="questionId") String pQuesId) {
-		  Boolean lIsDeleted 		= false;
+		  
 	   try {
 		   if(!pQuesId.equals("")) {
-			   lIsDeleted = new QuestionTable().deleteQuestionById(pQuesId);
-			   if(!lIsDeleted)
-			   {
-				   pQuesId = null;
-			   }
+			   pQuesId = new QuestionTable().deleteQuestionById(pQuesId);
 		   }
+		   
 	} catch (Exception e) {
 		e.printStackTrace();
 	}
 	return pQuesId;
    }
+   
+   
+   @RequestMapping(value="/questionAnswer.do", method = RequestMethod.PUT)
+   public String updateQuestion(HttpServletRequest req, HttpServletResponse resp, @RequestBody String pQuesAnswer) {
+		  
+	  
+	  QuestionDTO lQuesAnswer = mGson.fromJson(pQuesAnswer, QuestionDTO.class); 
+	   try {
+		   lQuesAnswer = new QuestionTable().updateQuestionById(lQuesAnswer);
+	   } catch (Exception e) {
+		e.printStackTrace();
+	   }
+	return mGson.toJson(lQuesAnswer);
+   }
 
 
-@RequestMapping(value="/getpassword.do")
-public   @ResponseBody  String getPasswordByUserName(HttpServletRequest req, HttpServletResponse resp, @RequestBody String pUserName) {
+   @RequestMapping(value="/getpassword.do")
+   public String getPasswordByUserName(HttpServletRequest req, HttpServletResponse resp, @RequestBody String pUserName) {
 	
     String lPassword = "";
 	try {
@@ -213,6 +223,6 @@ public   @ResponseBody  String getPasswordByUserName(HttpServletRequest req, Htt
 		e.printStackTrace();
 	}
 	return lPassword;
-}
+   }
 
 }
