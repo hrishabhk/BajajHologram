@@ -11,7 +11,8 @@ var app		=	app	||	{};
 	,collection			:	null
 	,el					:	"#questionContainer"
 	,events				:	{
-								"click .expand_listBtn"			:	"toggleAnswer"
+								"click .expand_listBtn"			:	"toggleAnswer",
+								'click #add-new-question-btn'	:	"newQuestion"
 							}
 	,render				:	function(){
 								console.log("Question View Rendered");
@@ -37,9 +38,7 @@ var app		=	app	||	{};
 							{
 								try
 								{
-									
 									app.QuestionDetailView = new app.QuestionDetailView({model : new app.QAModel(model)});
-									
 								}
 								catch(e)
 								{
@@ -48,6 +47,19 @@ var app		=	app	||	{};
 								console.log(app.QuestionDetailView.model);
 								app.QuestionDetailView.render();
 								
+							}
+	,newQuestion		:	function(e)
+							{
+								console.log(e);
+								try
+								{
+									app.QuestionDetailView = new app.QuestionDetailView({model : new app.QAModel()});
+								}
+								catch(e)
+								{
+									app.QuestionDetailView.model = new app.QAModel();
+								}
+								app.QuestionDetailView.editQA()
 							}
 	,toggleAnswer		:	function(e)
 							{

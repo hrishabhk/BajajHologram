@@ -9,21 +9,38 @@ var app		=	app	||	{};
 								},
 		routes				: {
 								""			: "home",
+								"/admin"	: "admin"
 		    				 },
 		home				: function(e)
-							    {
-									console.log()
-							    	try
-							    	{
-							    		app.QuestionBaseView = new app.QuestionBaseView();
-							    		
-							    	}
-							    	catch(e)
-							    	{
-							    		console.log(e.stack);
-							    		app.QuestionBaseView.render();
-							    	}
+							  {
+									if(loginModule == null)
+									{
+								    	try
+								    	{
+								    		app.QuestionBaseView = new app.QuestionBaseView();
+								    		
+								    	}
+								    	catch(e)
+								    	{
+								    		console.log(e.stack);
+								    		app.QuestionBaseView.render();
+								    	}
+									}
+									else
+									{
+										$('#signInModal').modal({
+											 backdrop: 'static',
+											 keyboard: false 
+										});
+									}
 							   }
+	,admin					: function(e)
+							{
+								console.log(e);
+							}
+							   
+		
+		    				 
 		});
 })(jQuery);
 

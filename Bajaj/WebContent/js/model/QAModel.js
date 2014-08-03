@@ -8,7 +8,7 @@ var app		=	app	||	{};
 	     	   					question	: "",
 	     	   					answer		: "",
 	     	   					key			: "",
-	     	   					frequent	: "",
+	     	   					frequent	: 0,
 							},
 		isFetched		:	false,
 	});

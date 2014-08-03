@@ -22,7 +22,7 @@ public class QuestionTable {
 	
 	
 	private static String CREATE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS "+SQL_QUES_TABLENAME+" ("+QUES_ID+" VARCHAR(50) , "+QUESTION+" VARCHAR(1000) ,"
-												+ " "+ANSWER+" VARCHAR(1000),"+CATEGORY+" VARCHAR(50) "+FREQUENT+" VARCHAR(25))";
+												+ " "+ANSWER+" VARCHAR(1000),"+CATEGORY+" VARCHAR(50) , "+FREQUENT+" VARCHAR(25))";
 	
 	
 	/**
@@ -35,11 +35,11 @@ public class QuestionTable {
 		try {
 			Connection lConnection = CommonUtility.getSqlConnection();
 			java.sql.Statement lSmt = lConnection.createStatement();
-			
-			lSmt.executeQuery(CREATE_TABLE_QUERY);
+			System.out.println(CREATE_TABLE_QUERY);
+			lSmt.executeUpdate(CREATE_TABLE_QUERY);
 			
 			String lQuery = "INSERT INTO "+SQL_QUES_TABLENAME+" VALUES ( '"+pQuesAnswer.getId()+"' , '"+pQuesAnswer.getQuestion()+"' , '"+pQuesAnswer.getAnswer()+"' ,"
-					+ "'"+pQuesAnswer.getCateory()+"'"+ "'"+pQuesAnswer.getFrequent()+"')";
+					+ "'"+pQuesAnswer.getCateory()+"' , "+ "'"+pQuesAnswer.getFrequent()+"')";
 			
 			PreparedStatement lPreparedStatment = (PreparedStatement) lConnection.prepareStatement(lQuery);
 			int lCount = lPreparedStatment.executeUpdate(); 
@@ -75,7 +75,8 @@ public class QuestionTable {
 			Connection lConnection = CommonUtility.getSqlConnection();
 			java.sql.Statement lSmt = lConnection.createStatement();
 			
-			String lQuery 		 = "SELECT * FROM "+SQL_QUES_TABLENAME+" WHERE "+QUESTION+" LIKE '%"+pQuestionStroke+"%'";
+			String lQuery 		 = "SELECT * FROM "+SQL_QUES_TABLENAME+" WHERE "+QUESTION+" LIKE '%"+pQuestionStroke.replaceAll("\"", "")+"%'";
+			System.out.println(lQuery);
 			ResultSet lResultSet = lSmt.executeQuery(lQuery);
 			resultList = new ArrayList<QuestionDTO>();
 			while (lResultSet.next()) {
@@ -84,6 +85,7 @@ public class QuestionTable {
 				lQuesData.setCateory(lResultSet.getString(CATEGORY));
 				lQuesData.setId(lResultSet.getString(QUES_ID));
 				lQuesData.setQuestion(lResultSet.getString(QUESTION));
+				lQuesData.setFrequent(lResultSet.getString(FREQUENT));
 				resultList.add(lQuesData);
 			 }
 			 lConnection.close();
@@ -107,14 +109,15 @@ public class QuestionTable {
 			Connection lConnection = CommonUtility.getSqlConnection();
 			java.sql.Statement lSmt = lConnection.createStatement();
 			
-			String lQuery 		 = "SELECT * FROM "+SQL_QUES_TABLENAME+" WHERE "+FREQUENT+" = 'true' LIMIT "+pIndex+" , 10";
+			String lQuery 		 = "SELECT * FROM "+SQL_QUES_TABLENAME+" WHERE "+FREQUENT+" = '1' LIMIT "+pIndex+" , 10";
 			ResultSet lResultSet = lSmt.executeQuery(lQuery);
-			
+			System.out.println(lQuery);
 			while (lResultSet.next()) {
 				QuestionDTO lQuesData = new QuestionDTO();
 				lQuesData.setAnswer(lResultSet.getString(ANSWER));
 				lQuesData.setCateory(lResultSet.getString(CATEGORY));
 				lQuesData.setId(lResultSet.getString(QUES_ID));
+				lQuesData.setQuestion(lResultSet.getString(QUESTION));
 				lQuesDataList.add(lQuesData);
 			 }
 			 lConnection.close();

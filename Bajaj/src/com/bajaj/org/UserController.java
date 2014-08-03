@@ -59,6 +59,11 @@ public class UserController {
 		}
 		return "index";
 	}
+	@RequestMapping(value="/admin.do")
+	public String abc()
+	{
+		return "admin";
+	}
 
    @RequestMapping(value="/login.do")
    public  @ResponseBody String loginUser(HttpServletRequest req, HttpServletResponse resp, @RequestBody HashMap<String, Object> pLogindata) {
@@ -130,6 +135,7 @@ public class UserController {
    @RequestMapping(value="/searchQuestion.do", method = RequestMethod.GET)
    public @ResponseBody String searchQuestion(HttpServletRequest req, HttpServletResponse resp, @RequestParam("query") String pQuestionStroke) {
 	   List<QuestionDTO> responseList = null;
+	   System.out.println("query stroke : "+pQuestionStroke);
 		if(!pQuestionStroke.equals(""))
 		{
 			responseList =  new QuestionTable().getQuesDetailFromQuesStroke(pQuestionStroke);
@@ -143,17 +149,16 @@ public class UserController {
 				responseList.add(defaultResult);
 			}
 		}
-		   
+		 System.out.println(mGson.toJson(responseList)); 
 	   return mGson.toJson(responseList);
    }
    
    @RequestMapping(value="/questionAnswer.do", method = RequestMethod.GET)
-   public String getAllFrequentQuestion(HttpServletRequest req, HttpServletResponse resp, @RequestParam String lIndex) {
+   public @ResponseBody String getAllFrequentQuestion(HttpServletRequest req, HttpServletResponse resp, @RequestParam("index") String lIndex) {
 	  
 	   String lDataToPost							 		  = "";
-	   
 	   try {
-		if(!lIndex.equals("")) {
+		if(lIndex.equals("")) {
 			lIndex = "0";
 		 }
 		   List<QuestionDTO> lQuesDetailList = new QuestionTable().getAllFrequentQuestion(lIndex);
@@ -166,7 +171,7 @@ public class UserController {
    
    @RequestMapping(value="/questionAnswer.do", method = RequestMethod.POST)
    public  @ResponseBody String addQuestion(HttpServletRequest req, HttpServletResponse resp, @RequestBody String pQuesdata) {
-	  
+	  System.out.println(pQuesdata);
 	   QuestionDTO lAdded     							= null;
 	   try 
 	   {
@@ -184,7 +189,7 @@ public class UserController {
 	return mGson.toJson(lAdded);
    }
    
-   @RequestMapping(value="/questionAnswer.do/{questionId}", method = RequestMethod.DELETE)
+   @RequestMapping(value="/questionAnswer.do/delete.do", method = RequestMethod.POST)
    public  @ResponseBody String delQuestion(HttpServletRequest req, HttpServletResponse resp, @PathVariable(value="questionId") String pQuesId) {
 		  
 	   try {
@@ -199,8 +204,8 @@ public class UserController {
    }
    
    
-   @RequestMapping(value="/questionAnswer.do", method = RequestMethod.PUT)
-   public String updateQuestion(HttpServletRequest req, HttpServletResponse resp, @RequestBody String pQuesAnswer) {
+   @RequestMapping(value="/questionAnswer.do/update.do", method = RequestMethod.POST)
+   public @ResponseBody String updateQuestion(HttpServletRequest req, HttpServletResponse resp, @RequestBody String pQuesAnswer) {
 		  
 	  
 	  QuestionDTO lQuesAnswer = mGson.fromJson(pQuesAnswer, QuestionDTO.class); 

@@ -50,13 +50,11 @@ $(function(){
             })
 		},
 		focus: function( event, ui ) {
-			$( '#searchform input[type="text"]' ).val( ui.item.city);
-			zip= ui.item.zipCode;
-			event.preventDefault();
+			$( '#searchform input[type="text"]' ).val( ui.item.question);
+			
 		},
 		select: function( event, ui ) {
-			$( '#searchform input[type="text"]' ).val( ui.item.city);
-			zip= ui.item.zipCode;
+			$( '#searchform input[type="text"]' ).val( ui.item.question);
 			event.preventDefault();
 		}
 	})
@@ -79,7 +77,7 @@ $('#searchform input[type="text"]').on('autocompletefocus',function(event, ui){
 //Search using City name.
 $('#searchform input[type="text"]').on( "autocompleteselect", function( event, ui ) {
 	console.log(ui.item);
-	if(ui.item.id == "none")
+	if(ui.item.id != "none")
 	{
 		try
 		{
@@ -97,31 +95,4 @@ $('#searchform input[type="text"]').on( "autocompleteselect", function( event, u
 //search city submit action.
 $('#searchform').submit(function(event){
 	event.preventDefault();
-	$('#searchByCity').attr('disabled', true);
-	if(zip!=null&&zip!=''&&($('#cityName').val()!='')&&($('#cityName').val()!=null))
-	{
-		$('#cityNameSpan').empty();
-		var place={
-				zipCode: zip
-				};
-		var dataString={
-				"key": $('#keyString').val(),
-				"place": place
-			};
-		dataString={
-			"required":"timezoneData",
-			"data": dataString
-		};
-		dataString=JSON.stringify(dataString);
-		getTimezoneData(dataString);
-	}
-	else
-	{
-		$('#cityNameSpan').html('please select place').css('color','red');
-	}
-	$('#searchByCity').attr('disabled', false);
 });
-if (!$('#timezone').hasClass('active')) 
-{
-		$('#timezone').addClass('active');
-	}
