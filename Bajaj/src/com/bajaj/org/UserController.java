@@ -85,6 +85,11 @@ public class UserController {
 				   lUserDetail.put(GlobalVariables.LAST_NAME, lUser.getLastName());
 				   lUserDetail.put(GlobalVariables.USER_TYPE, lUser.getUserType());
 				   lUserDetail.put(GlobalVariables.ID, lUser.getId());
+				   
+				   req.getSession().setAttribute(GlobalVariables.LOGGEDIN_USER, lUser.getFirstName());
+				   if(lUser.getUserType().equals("admin")) {
+					   req.getSession().setAttribute(GlobalVariables.ADMIN_LOGIN, true);
+				   }
 			   } else {
 				   lUserDetail.put(GlobalVariables.RESPONSE, false);
 			   }
@@ -100,11 +105,11 @@ public class UserController {
    
    @RequestMapping(value="/saveUser.do", method= RequestMethod.POST)
    public @ResponseBody String signUpUser(HttpServletRequest req, HttpServletResponse resp, @RequestBody String pSignUpdata) {
-	
+	   
 	   String lUuidUser 							= "u"+UUID.randomUUID().toString();
 	   UserDTO user 								= null;
 	   try {
-		   user 							= mGson.fromJson(pSignUpdata, UserDTO.class);
+		   user 									= mGson.fromJson(pSignUpdata, UserDTO.class);
 		   System.out.println(pSignUpdata);
 		   if(!user.getUserName().trim().equals("") && !user.getPassword().trim().equals("") && !user.getFirstName().trim().equals("") && !user.getLastName().trim().equals("") && !user.getUserType().trim().equals("")) 
 		   {
@@ -112,11 +117,19 @@ public class UserController {
 			   {
 				   user.setId(lUuidUser);
 			   }
-			   user = new UserTable().insertUserData(user);
+			   if(new UserTable().getUserDataFromUserName(user.getUserName()) != null) {
+			      user = new UserTable().insertUserData(user);
+			      user.setResponse(true);
+			      user.setMessage(GlobalVariables.USER_SUCCESSFULLY_CREATED);
+			   } else {
+				  user.setResponse(false);
+				  user.setMessage(GlobalVariables.USER_ALLREADY_EXISTS);
+			   }
 		   } 
 		   else 
 		   {
-			   user = null;
+			   user.setResponse(false);
+			   user.setMessage(GlobalVariables.SOMETHING_WENT_WRONG);
 		   }
 		   
 	} catch (Exception e) {
@@ -125,6 +138,20 @@ public class UserController {
 	   return mGson.toJson(user);
    }
    
+   
+   @RequestMapping(value="/getAllUser.do", method= RequestMethod.GET)
+   public @ResponseBody String getAllUser(HttpServletRequest req, HttpServletResponse resp) {
+	   
+	   List<UserDTO> lListOfUser 								= null;
+	   try {
+		   if((boolean) req.getSession().getAttribute(GlobalVariables.ADMIN_LOGIN)) {
+		       lListOfUser = new UserTable().getAllUserData();
+		   }
+	   } catch (Exception e) {
+		   e.printStackTrace();
+	   }
+	   return mGson.toJson(lListOfUser);
+   }
    
    
    @RequestMapping(value="/searchQuestion.do", method = RequestMethod.GET)

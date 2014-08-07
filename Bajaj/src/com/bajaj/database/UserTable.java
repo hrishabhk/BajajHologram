@@ -3,6 +3,8 @@ package com.bajaj.database;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.bajaj.dto.UserDTO;
 import com.bajaj.utility.CommonUtility;
@@ -118,13 +120,41 @@ public class UserTable {
 			 }
 			 lConnection.close();
 			 CommonUtility.deRegistarDriverManager();
-			
 		} catch (SQLException e) {
+			lUserData = null;
 			e.printStackTrace();
 		}
 		return lUserData;
 	}
 	
+	
+	public List<UserDTO> getAllUserData() {
+		
+		List<UserDTO> lListOfUser = new ArrayList<>();
+		try {
+			Connection lConnection = CommonUtility.getSqlConnection();
+			java.sql.Statement lSmt = lConnection.createStatement();
+			
+			lSmt.executeQuery(CREATE_TABLE_QUERY);
+			String lQuery 		 = "SELECT * FROM "+SQL_USER_TABLENAME;
+			ResultSet lResultSet = lSmt.executeQuery(lQuery);
+			
+			while (lResultSet.next()) {
+				UserDTO lUserData = new UserDTO();
+				lUserData.setFirstName(lResultSet.getString(FIRST_NAME));
+				lUserData.setLastName(lResultSet.getString(LAST_NAME));
+				lUserData.setUserType(lResultSet.getString(USER_TYPE));
+				lUserData.setId(lResultSet.getString(ID));
+				lListOfUser.add(lUserData);
+			}
+			 lConnection.close();
+			 CommonUtility.deRegistarDriverManager();
+		} catch (SQLException e) {
+			lListOfUser = null;
+			e.printStackTrace();
+		}
+		return lListOfUser;
+	}
 	
 	public String getPasswordFromUsername(String pUserName) {
 		
@@ -147,6 +177,8 @@ public class UserTable {
 		}
 		return lPassword;
 	}
+	
+	
 	
 	
 	

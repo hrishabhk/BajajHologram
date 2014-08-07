@@ -8,6 +8,8 @@ public class UserDTO {
 		private String lastName;
 		private String userName;
 		private String password;
+		private String message;
+		private Boolean response;
 		
 		
 		
@@ -47,8 +49,18 @@ public class UserDTO {
 		public void setUserType(String userType) {
 			this.userType = userType;
 		}
+		public Boolean getResponse() {
+			return response;
+		}
+		public void setResponse(Boolean response) {
+			this.response = response;
+		}
+		public String getMessage() {
+			return message;
+		}
+		public void setMessage(String message) {
+			this.message = message;
+		}
 		
-		
-	
 	}
 
