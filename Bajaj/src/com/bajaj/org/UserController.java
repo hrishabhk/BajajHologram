@@ -83,7 +83,7 @@ public class UserController {
 				   lUserDetail.put(GlobalVariables.RESPONSE, true);
 				   lUserDetail.put(GlobalVariables.FIRST_NAME, lUser.getFirstName());
 				   lUserDetail.put(GlobalVariables.LAST_NAME, lUser.getLastName());
-				   lUserDetail.put(GlobalVariables.USER_TYPE, lUser.getUserName());
+				   lUserDetail.put(GlobalVariables.USER_TYPE, lUser.getUserType());
 				   lUserDetail.put(GlobalVariables.ID, lUser.getId());
 			   } else {
 				   lUserDetail.put(GlobalVariables.RESPONSE, false);
