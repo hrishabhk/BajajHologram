@@ -30,32 +30,30 @@ public class UserTable {
 	 * insert data by passing User object
 	 */
 	
-	public Boolean insertUserData(UserDTO pUser) {
+	public UserDTO insertUserData(UserDTO pUser) {
 		
-		Boolean lInserted = false;
 		try {
 			Connection lConnection = CommonUtility.getSqlConnection();
 			java.sql.Statement lSmt = lConnection.createStatement();
 			
-			lSmt.executeQuery(CREATE_TABLE_QUERY);
+			lSmt.executeUpdate(CREATE_TABLE_QUERY);
 			
 			String lQuery = "INSERT INTO "+SQL_USER_TABLENAME+" VALUES ( '"+pUser.getId()+"' , '"+pUser.getUserName()+"' , '"+pUser.getPassword()+"' ,"
-					+ "'"+pUser.getFirstName()+"' , '"+pUser.getLastName()+"' , '"+pUser.getUsertype()+"')";
+					+ "'"+pUser.getFirstName()+"' , '"+pUser.getLastName()+"' , '"+pUser.getUserType()+"')";
 			
 			PreparedStatement lPreparedStatment = (PreparedStatement) lConnection.prepareStatement(lQuery);
 			int lCount = lPreparedStatment.executeUpdate(); 
 			System.out.println("Rows updated - "+lCount);
-			if(lCount > 0){
-				lInserted = true;
-			} else {
-				lInserted = false;
+			if(!(lCount > 0))
+			{
+				pUser = null;
 			}
 			lConnection.close();
 			CommonUtility.deRegistarDriverManager();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return lInserted;
+		return pUser;
 	}
 	
 	
@@ -115,7 +113,7 @@ public class UserTable {
 			while (lResultSet.next()) {
 				lUserData.setFirstName(lResultSet.getString(FIRST_NAME));
 				lUserData.setLastName(lResultSet.getString(LAST_NAME));
-				lUserData.setUsertype(lResultSet.getString(USER_TYPE));
+				lUserData.setUserType(lResultSet.getString(USER_TYPE));
 				lUserData.setId(lResultSet.getString(ID));
 			 }
 			 lConnection.close();

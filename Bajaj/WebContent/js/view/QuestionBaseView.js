@@ -22,7 +22,6 @@ var app		=	app	||	{};
 							}
 	,renderQAList		:	function()
 							{
-								
 								try
 								{
 									app.QuestionListView = new app.QuestionListView();
