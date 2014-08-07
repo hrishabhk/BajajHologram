@@ -83,7 +83,7 @@ public class UserController {
 				   lUserDetail.put(GlobalVariables.RESPONSE, true);
 				   lUserDetail.put(GlobalVariables.FIRST_NAME, lUser.getFirstName());
 				   lUserDetail.put(GlobalVariables.LAST_NAME, lUser.getLastName());
-				   lUserDetail.put(GlobalVariables.USER_TYPE, lUser.getUsertype());
+				   lUserDetail.put(GlobalVariables.USER_TYPE, lUser.getUserName());
 				   lUserDetail.put(GlobalVariables.ID, lUser.getId());
 			   } else {
 				   lUserDetail.put(GlobalVariables.RESPONSE, false);
@@ -98,36 +98,31 @@ public class UserController {
    }
    
    
-   @RequestMapping(value="/signup.do")
-   public @ResponseBody Boolean signUpUser(HttpServletRequest req, HttpServletResponse resp, @RequestBody HashMap<String, Object> pSignUpdata) {
+   @RequestMapping(value="/saveUser.do", method= RequestMethod.POST)
+   public @ResponseBody String signUpUser(HttpServletRequest req, HttpServletResponse resp, @RequestBody String pSignUpdata) {
 	
-	   UserDTO lUserDetail  						= new UserDTO();
-	   Boolean lSignUpSuccess						= false;
 	   String lUuidUser 							= "u"+UUID.randomUUID().toString();
-	   
+	   UserDTO user 								= null;
 	   try {
-		   String lUserName							= (String)pSignUpdata.get(GlobalVariables.USER_NAME);
-		   String lPassword 						= (String)pSignUpdata.get(GlobalVariables.PASSWORD);
-		   String lFirstName						= (String)pSignUpdata.get(GlobalVariables.FIRST_NAME);
-		   String lLastName 						= (String)pSignUpdata.get(GlobalVariables.LAST_NAME);
-		   String lUserType 						= (String)pSignUpdata.get(GlobalVariables.USER_TYPE);
-			
-		   if(!lUserName.equals("") && !lPassword.equals("")) {
-			   lUserDetail.setFirstName(lFirstName);
-			   lUserDetail.setLastName(lLastName);
-			   lUserDetail.setUserName(lUserName);
-			   lUserDetail.setPassword(lPassword);
-			   lUserDetail.setUsertype(lUserType);
-			   lUserDetail.setId(lUuidUser);
-			   lSignUpSuccess = new UserTable().insertUserData(lUserDetail);
-		   } else {
-			   lSignUpSuccess = false;
+		   user 							= mGson.fromJson(pSignUpdata, UserDTO.class);
+		   System.out.println(pSignUpdata);
+		   if(!user.getUserName().trim().equals("") && !user.getPassword().trim().equals("") && !user.getFirstName().trim().equals("") && !user.getLastName().trim().equals("") && !user.getUserType().trim().equals("")) 
+		   {
+			   if(user.getId().trim().equals(""))
+			   {
+				   user.setId(lUuidUser);
+			   }
+			   user = new UserTable().insertUserData(user);
+		   } 
+		   else 
+		   {
+			   user = null;
 		   }
 		   
 	} catch (Exception e) {
 		e.printStackTrace();
 	}
-	   return lSignUpSuccess;
+	   return mGson.toJson(user);
    }
    
    

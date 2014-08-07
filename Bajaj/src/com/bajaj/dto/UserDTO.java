@@ -3,7 +3,7 @@ package com.bajaj.dto;
 public class UserDTO {
 	
 		private String id;
-		private String usertype;	
+		private String userType;	
 		private String firstName;
 		private String lastName;
 		private String userName;
@@ -16,12 +16,6 @@ public class UserDTO {
 		}
 		public void setId(String id) {
 			this.id = id;
-		}
-		public String getUsertype() {
-			return usertype;
-		}
-		public void setUsertype(String usertype) {
-			this.usertype = usertype;
 		}
 		public String getFirstName() {
 			return firstName;
@@ -46,6 +40,12 @@ public class UserDTO {
 		}
 		public void setPassword(String password) {
 			this.password = password;
+		}
+		public String getUserType() {
+			return userType;
+		}
+		public void setUserType(String userType) {
+			this.userType = userType;
 		}
 		
 		

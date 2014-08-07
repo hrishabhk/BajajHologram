@@ -1,5 +1,7 @@
 package com.bajaj.dto;
 
+import java.util.Calendar;
+
 public class QuestionDTO {
 
 	private String id;
@@ -13,6 +15,8 @@ public class QuestionDTO {
 		return id;
 	}
 	public void setId(String id) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(9788989);
 		this.id = id;
 	}
 	public String getQuestion() {
