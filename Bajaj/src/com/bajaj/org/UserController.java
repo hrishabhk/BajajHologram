@@ -99,7 +99,7 @@ public class UserController {
 			   else 
 			   {
 				   lUserDetail.put(GlobalVariables.RESPONSE, false);
-				   req.setAttribute("loginFailed", "has-warning");
+				   req.setAttribute("loginFailed", "has-error");
 				   RequestDispatcher rd = req.getRequestDispatcher("./");
 				   rd.forward(req, resp);
 				   System.out.println("Login Failed");
@@ -108,7 +108,7 @@ public class UserController {
 		   else 
 		   {
 			   lUserDetail.put(GlobalVariables.RESPONSE, false);
-			   req.setAttribute("loginFailed", "has-warning");
+			   req.setAttribute("loginFailed", "has-error");
 			   RequestDispatcher rd = req.getRequestDispatcher("./");
 			   rd.forward(req, resp);
 			   System.out.println("Login Failed");
@@ -116,7 +116,7 @@ public class UserController {
 		   
 	} catch (Exception e) {
 		e.printStackTrace();
-		req.setAttribute("loginFailed", "has-warning");
+		req.setAttribute("loginFailed", "has-error");
 		RequestDispatcher rd = req.getRequestDispatcher("./");
 		rd.forward(req, resp);
 	}
@@ -165,9 +165,9 @@ public class UserController {
 	   
 	   List<UserDTO> lListOfUser 								= null;
 	   try {
-//		   if((boolean) req.getSession().getAttribute(GlobalVariables.ADMIN_LOGIN)) {
+		   if((boolean) req.getSession().getAttribute(GlobalVariables.ADMIN_LOGIN)) {
 		       lListOfUser = new UserTable().getAllUserData();
-//		   }
+		   }
 		       System.out.println(mGson.toJson(lListOfUser));
 	   } catch (Exception e) {
 		   e.printStackTrace();

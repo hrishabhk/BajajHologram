@@ -18,13 +18,10 @@
 		    <%}else{ %>
 		    	${user}
 		    <%} %></a></li>
-			    	<li id="home"><a href="./">Home</a></li>
-			    	<%if(session.getAttribute("user")==null){ %><li id="signin"><a href="#signIn" data-backdrop="static" data-toggle="modal">SignIn</a></li><%} %>
-				    <%if(session.getAttribute("user")!=null){ %><li id="profile"><a href="./detail" id="profile">Profile</a></li><%} %>
-				   <%if(session.getAttribute("user")!=null){ %> <li id=friend><a href="./friend">Search</a></li><%} %>
-				    <%if(session.getAttribute("user")!=null){ %> <li id=image><a href="./image">Images</a></li><%} %>
-				    <%if(session.getAttribute("user")!=null){ %> <li id=video><a href="./video">Video</a></li><%} %>
-				   <%if(session.getAttribute("user")!=null){ %> <li id=logout><a href="./logout">Logout</a></li><%} %>
+			    	<li id="home"><a href="./index.do">Home</a></li>
+			    	<%if(session.getAttribute("firstname")==null){ %><li id="signin"><a href="./login.do" data-backdrop="static" data-toggle="modal">SignIn</a></li><%} %>
+				    <%if(session.getAttribute("adminLogin")!=null && (Boolean)session.getAttribute("adminLogin")){ %><li id="admin"><a href="./admin.do" >Admin</a></li><%} %>
+				   <%if(session.getAttribute("firstname")!=null){ %> <li id=logout><a href="./logout.do">Logout</a></li><%} %>
 			    </ul>
 	    	</div>
 	    </div>
