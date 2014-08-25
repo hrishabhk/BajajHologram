@@ -21,7 +21,7 @@ public class UserTable {
 	private static String USER_TYPE						= "_userType";
 	
 	
-	private static String CREATE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS "+SQL_USER_TABLENAME+" ("+ID+" VARCHAR(50) , "+USERNAME+" VARCHAR(50) ,"
+	public static String CREATE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS "+SQL_USER_TABLENAME+" ("+ID+" VARCHAR(50) , "+USERNAME+" VARCHAR(50) ,"
 												+ " "+PASSWORD+" VARCHAR(50),"+FIRST_NAME+" VARCHAR(50), "+LAST_NAME+" VARCHAR(50) ,"
 												+ " "+USER_TYPE+" VARCHAR(50) )";
 	

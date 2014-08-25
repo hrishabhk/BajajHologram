@@ -13,7 +13,7 @@ import com.mysql.jdbc.PreparedStatement;
 public class QuestionTable {
 
 
-	private static String SQL_QUES_TABLENAME 			= "ques_database";
+	private static String SQL_QUES_TABLENAME 			= "question_database";
 	private static String QUES_ID     					= "_id";
 	private static String QUESTION						= "_question";
 	private static String ANSWER   						= "_answer";	
@@ -21,10 +21,10 @@ public class QuestionTable {
 	private static String FREQUENT 						= "_frequent";
 	
 	
-	private static String CREATE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS "+SQL_QUES_TABLENAME+" ("+QUES_ID+" VARCHAR(50) , "+QUESTION+" VARCHAR(1000) ,"
+	public static String CREATE_TABLE_QUERY = "CREATE TABLE IF NOT EXISTS "+SQL_QUES_TABLENAME+" ("+QUES_ID+" VARCHAR(50) , "+QUESTION+" VARCHAR(1000) ,"
 												+ " "+ANSWER+" VARCHAR(1000),"+CATEGORY+" VARCHAR(50) , "+FREQUENT+" VARCHAR(25))";
 	
-	
+
 	/**
 	 * @author abhishek
 	 * @param pQuesAnswer

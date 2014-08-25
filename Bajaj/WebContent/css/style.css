@@ -11,7 +11,7 @@ li.answer
 }
 a:focus{outline:thin dotted}
 a:hover,a:active{outline:0}
-h1{font-size:2em;margin:.67em 0}
+/* h1{font-size:2em;margin:.67em 0} */
 h2{font-size:26px;margin:.83em 0}
 h3{font-size:1.17em;margin:1em 0}
 h4{font-size:1em;margin:1.33em 0}
@@ -217,7 +217,7 @@ a:focus {
 }
 
 /*	Headings */
-h1, h2, h3, h4, h5, h6 {font-weight:600; margin: 0 0 10px;	color:#1a1a1a;}
+ h2, h3, h4, h5, h6 {font-weight:600; margin: 0 0 10px;	color:#1a1a1a;}
 
 /*	Page Structure */
 

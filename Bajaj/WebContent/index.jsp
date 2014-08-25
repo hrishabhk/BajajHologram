@@ -26,8 +26,7 @@
 	<!-------------------- Nav Bar ------------->
 
 	<div class="navbar  navbar-default" id="theme-header"> 
-		  
-		    <a href="./" class="navbar-brand">Spring By Hrishabh</a>
+		    <img id="login_logo" alt="" src="img/logo.png" width="224" height="78" >
 	    </div>
 	<!-- Body Part -->
 	<div class="container" id="questionContainer"></div>

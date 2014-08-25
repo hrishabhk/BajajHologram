@@ -145,5 +145,10 @@
 	
 	<!-- Router -->
 	<script type="text/javascript" src="js/AdminRouter.js"></script>
+	<script type="text/javascript">
+			$(document).ready(function(){
+			$('#admin').addClass('active');
+		});
+		</script>
 </body>
 </html>

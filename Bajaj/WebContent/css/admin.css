@@ -74,13 +74,13 @@ body{
  .nav-contact-panel, .form-info-field{
  	margin-bottom: 0px;
  }
-.navbar-inverse .navbar-nav > li > a{
+./* navbar-inverse .navbar-nav > li > a{
  	padding-bottom: 0px;
  }
  .navbar-inverse .navbar-nav > li > button{
  	margin-left: 25px;
- }
-#navbar {
+ } */
+/* #navbar {
   background-color: #0084b0;
   border-color: #098eba;
 }
@@ -108,7 +108,7 @@ body{
 }
 #navbar .navbar-toggle:hover, #navbar .navbar-toggle:focus {
   background-color: #098eba;
-}
+} */
 #userSubmit
 {
 	margin-left: 0px;

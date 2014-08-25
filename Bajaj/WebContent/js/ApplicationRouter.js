@@ -12,8 +12,6 @@ var app		=	app	||	{};
 		    				 },
 		home				: function(e)
 							  {
-									if(loginModule == null)
-									{
 								    	try
 								    	{
 								    		app.QuestionBaseView = new app.QuestionBaseView();
@@ -24,14 +22,6 @@ var app		=	app	||	{};
 								    		console.log(e.stack);
 								    		app.QuestionBaseView.render();
 								    	}
-									}
-									else
-									{
-										$('#signInModal').modal({
-											 backdrop: 'static',
-											 keyboard: false 
-										});
-									}
 							   }
 		});
 })(jQuery);

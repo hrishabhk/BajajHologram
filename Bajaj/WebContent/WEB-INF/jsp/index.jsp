@@ -20,7 +20,7 @@ if(loginModule == null)
 <link rel="stylesheet" type="text/stylesheet" href="css/style.css">
 <link rel="stylesheet" type="text/stylesheet" href="css/styles.css">
 <script type="text/javascript">
-var loginModule = <%=loginModule%>;
+	var fName = '<%=loginModule%>';
 </script>
 <title>Home</title>
 </head>
@@ -30,8 +30,9 @@ var loginModule = <%=loginModule%>;
 	<jsp:include page="header.jsp"></jsp:include>
     <div class="navbar  navbar-default" id="theme-header"> 
 	    <div class="container">
-		  
-		    <a href="./" class="navbar-brand">Spring By Hrishabh</a>
+		  <h1>
+		    <a href="./index.do" class="navbar-brand">Support</a>
+		  </h1>
 	    </div>
     </div>
     <div id="live-search">
@@ -218,5 +219,12 @@ var loginModule = <%=loginModule%>;
 		
 		<!-- Router -->
 		<script type="text/javascript" src="js/ApplicationRouter.js"></script>
+		
+		<script type="text/javascript">
+		$(document).ready(function(){
+			$('#home').addClass('active');
+		});
+
+</script>
   	</body>
 </html>
