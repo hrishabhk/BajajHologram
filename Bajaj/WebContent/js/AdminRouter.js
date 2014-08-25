@@ -12,6 +12,7 @@ var app		=	app	||	{};
 		    				 },
 		admin				: function(e)
 							  {
+			app.UserBaseView = new app.UserBaseView();
 									try
 									{
 										app.UserBaseView = new app.UserBaseView();

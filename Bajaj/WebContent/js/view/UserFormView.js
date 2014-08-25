@@ -17,7 +17,7 @@ var app		=	app	||	{};
    						{
    							console.log("UserFormView rendered");
    							var _this=this;
-   							var template=_.template($('#userFormTemplate').html(),{});
+   							var template=_.template($('#userFormTemplate').html(),{user	: _this.model});
    							console.log("template")
    							this.$el.html(template);
    							
@@ -35,6 +35,7 @@ var app		=	app	||	{};
 								success			:	function(data)
 													{
 														console.log(data);
+														app.UserCollection.add(new app.UserModel(data));
 													}
 							});
 						}

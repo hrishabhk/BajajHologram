@@ -1,7 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%
- String loginModule = (String)session.getAttribute("loginModule");
+ String loginModule = (String)session.getAttribute("firstname");
+if(loginModule == null)
+{
+	response.sendRedirect("./");
+}
  %>
 <!doctype html>
 <html>

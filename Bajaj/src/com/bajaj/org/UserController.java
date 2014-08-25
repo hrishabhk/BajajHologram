@@ -1,11 +1,12 @@
 package com.bajaj.org;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,9 +23,7 @@ import com.bajaj.database.QuestionTable;
 import com.bajaj.database.UserTable;
 import com.bajaj.dto.QuestionDTO;
 import com.bajaj.dto.UserDTO;
-import com.bajaj.utility.CommonUtility;
 import com.google.gson.Gson;
-import com.mysql.jdbc.PreparedStatement;
 
 
 
@@ -32,31 +31,35 @@ import com.mysql.jdbc.PreparedStatement;
 public class UserController {
 	
 	Gson mGson = new Gson();
-	
-	
+	@RequestMapping(value="/login.do", method=RequestMethod.GET)
+	public void loginPage(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+	{
+		RequestDispatcher rd = req.getRequestDispatcher("./");
+		   rd.forward(req, resp);
+	}
 	@RequestMapping(value="/index.do")
 	public String homePage(HttpServletRequest req, HttpServletResponse resp) {
-		try {
-			Connection lConnection = CommonUtility.getSqlConnection();
-			java.sql.Statement lSmt = lConnection.createStatement();
-			
-			String lQuery 		 = "INSERT INTO Persons VALUES (1 ,'kumar', 'abhi' , 'velachery' , 'chennai')";
-			PreparedStatement lPreparedStatment = (PreparedStatement) lConnection.prepareStatement(lQuery);
-			int lCount = lPreparedStatment.executeUpdate(); 
-			System.out.println("count updated -" +lCount);
-			
-			String lQuery2 		 = "SELECT * FROM Persons WHERE LastName LIKE '%kum%'";
-			ResultSet lResultSet = lSmt.executeQuery(lQuery2);
-			
-			while (lResultSet.next()) {
-				System.out.println("name - "+lResultSet.getString("firstName"));
-			 }
-			
-			 lConnection.close();
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			Connection lConnection = CommonUtility.getSqlConnection();
+//			java.sql.Statement lSmt = lConnection.createStatement();
+//			
+//			String lQuery 		 = "INSERT INTO Persons VALUES (1 ,'kumar', 'abhi' , 'velachery' , 'chennai')";
+//			PreparedStatement lPreparedStatment = (PreparedStatement) lConnection.prepareStatement(lQuery);
+//			int lCount = lPreparedStatment.executeUpdate(); 
+//			System.out.println("count updated -" +lCount);
+//			
+//			String lQuery2 		 = "SELECT * FROM Persons WHERE LastName LIKE '%kum%'";
+//			ResultSet lResultSet = lSmt.executeQuery(lQuery2);
+//			
+//			while (lResultSet.next()) {
+//				System.out.println("name - "+lResultSet.getString("firstName"));
+//			 }
+//			
+//			 lConnection.close();
+//			
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		return "index";
 	}
 	@RequestMapping(value="/admin.do")
@@ -65,45 +68,63 @@ public class UserController {
 		return "admin";
 	}
 
-   @RequestMapping(value="/login.do")
-   public  @ResponseBody String loginUser(HttpServletRequest req, HttpServletResponse resp, @RequestBody HashMap<String, Object> pLogindata) {
+   @RequestMapping(value="/login.do", method=RequestMethod.POST)
+   public void loginUser(HttpServletRequest req, HttpServletResponse resp, @RequestParam("username") String userName,  @RequestParam("password") String password) throws IOException, ServletException {
 	
 	   HashMap<String, Object> lUserDetail  		= new HashMap<String, Object>();
-	   String lDataToPost 							="";
 	   
 	   try {
-		   String lUserName							= (String)pLogindata.get(GlobalVariables.USER_NAME);
-		   String lPassword 						= (String)pLogindata.get(GlobalVariables.PASSWORD);
-			
-		   if(!lUserName.equals("") && !lPassword.equals("")) {
+		   if(userName != null && !userName.equals("") && password!= null && !password.equals("")) {
 			   
-			   Boolean lValideUser = new UserTable().validateUserLogin(lUserName , lPassword);
-			   if(lValideUser) {
-				   UserDTO lUser = new UserTable().getUserDataFromUserName((String)pLogindata.get(GlobalVariables.USER_NAME));
-				   lUserDetail.put(GlobalVariables.RESPONSE, true);
-				   lUserDetail.put(GlobalVariables.FIRST_NAME, lUser.getFirstName());
-				   lUserDetail.put(GlobalVariables.LAST_NAME, lUser.getLastName());
-				   lUserDetail.put(GlobalVariables.USER_TYPE, lUser.getUserType());
-				   lUserDetail.put(GlobalVariables.ID, lUser.getId());
+			   Boolean lValideUser = new UserTable().validateUserLogin(userName , password);
+			   if(lValideUser) 
+			   {
+				   UserDTO lUser = new UserTable().getUserDataFromUserName(userName);
+				   System.out.println(mGson.toJson(lUser));
+				   req.getSession().setAttribute(GlobalVariables.RESPONSE, true);
+				   req.getSession().setAttribute(GlobalVariables.FIRST_NAME, lUser.getFirstName());
+				   req.getSession().setAttribute(GlobalVariables.LAST_NAME, lUser.getLastName());
+				   req.getSession().setAttribute(GlobalVariables.USER_TYPE, lUser.getUserType());
+				   req.getSession().setAttribute(GlobalVariables.ID, lUser.getId());
 				   
-				   req.getSession().setAttribute(GlobalVariables.LOGGEDIN_USER, lUser.getFirstName());
-				   if(lUser.getUserType().equals("admin")) {
+				   if(lUser.getUserType().equals("admin")) 
+				   {
 					   req.getSession().setAttribute(GlobalVariables.ADMIN_LOGIN, true);
+					   resp.sendRedirect("./admin.do");
 				   }
-			   } else {
+				   else
+					   resp.sendRedirect("./index.do");
+				   req.getSession().setAttribute("loginFailed", "");
+			   }
+			   else 
+			   {
 				   lUserDetail.put(GlobalVariables.RESPONSE, false);
+				   req.setAttribute("loginFailed", "has-warning");
+				   RequestDispatcher rd = req.getRequestDispatcher("./");
+				   rd.forward(req, resp);
+				   System.out.println("Login Failed");
 			   }
 		   }
-		   lDataToPost = mGson.toJson(lUserDetail);
+		   else 
+		   {
+			   lUserDetail.put(GlobalVariables.RESPONSE, false);
+			   req.setAttribute("loginFailed", "has-warning");
+			   RequestDispatcher rd = req.getRequestDispatcher("./");
+			   rd.forward(req, resp);
+			   System.out.println("Login Failed");
+		   }
 		   
 	} catch (Exception e) {
 		e.printStackTrace();
+		req.setAttribute("loginFailed", "has-warning");
+		RequestDispatcher rd = req.getRequestDispatcher("./");
+		rd.forward(req, resp);
 	}
-	   return lDataToPost;
+	  
    }
    
    
-   @RequestMapping(value="/saveUser.do", method= RequestMethod.POST)
+   @RequestMapping(value={"/user.do","/saveUser.do"}, method= RequestMethod.POST)
    public @ResponseBody String signUpUser(HttpServletRequest req, HttpServletResponse resp, @RequestBody String pSignUpdata) {
 	   
 	   String lUuidUser 							= "u"+UUID.randomUUID().toString();
@@ -139,14 +160,15 @@ public class UserController {
    }
    
    
-   @RequestMapping(value="/getAllUser.do", method= RequestMethod.GET)
+   @RequestMapping(value="/user.do", method= RequestMethod.GET)
    public @ResponseBody String getAllUser(HttpServletRequest req, HttpServletResponse resp) {
 	   
 	   List<UserDTO> lListOfUser 								= null;
 	   try {
-		   if((boolean) req.getSession().getAttribute(GlobalVariables.ADMIN_LOGIN)) {
+//		   if((boolean) req.getSession().getAttribute(GlobalVariables.ADMIN_LOGIN)) {
 		       lListOfUser = new UserTable().getAllUserData();
-		   }
+//		   }
+		       System.out.println(mGson.toJson(lListOfUser));
 	   } catch (Exception e) {
 		   e.printStackTrace();
 	   }
@@ -251,5 +273,11 @@ public class UserController {
 	}
 	return lPassword;
    }
-
+   
+   @RequestMapping(value="/logout.do")
+   public void logout(HttpServletRequest req, HttpServletResponse resp) throws IOException
+   {
+	   req.getSession().invalidate();
+	   resp.sendRedirect("./");
+   }
 }

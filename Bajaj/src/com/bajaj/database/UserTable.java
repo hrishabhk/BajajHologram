@@ -73,8 +73,8 @@ public class UserTable {
 			Connection lConnection = CommonUtility.getSqlConnection();
 			java.sql.Statement lSmt = lConnection.createStatement();
 			
-			lSmt.executeQuery(CREATE_TABLE_QUERY);
-			String lQuery 		 = "SELECT "+PASSWORD+" FROM "+SQL_USER_TABLENAME+" WHERE "+USERNAME+" = "+pUserName+")";
+//			lSmt.executeUpdate(CREATE_TABLE_QUERY);
+			String lQuery 		 = "SELECT "+PASSWORD+" FROM "+SQL_USER_TABLENAME+" WHERE "+USERNAME+" = '"+pUserName+"'";
 			ResultSet lResultSet = lSmt.executeQuery(lQuery);
 			while (lResultSet.next()) {
 				 lPassword = lResultSet.getString(PASSWORD);
@@ -108,8 +108,9 @@ public class UserTable {
 			Connection lConnection = CommonUtility.getSqlConnection();
 			java.sql.Statement lSmt = lConnection.createStatement();
 			
-			lSmt.executeQuery(CREATE_TABLE_QUERY);
-			String lQuery 		 = "SELECT * FROM "+SQL_USER_TABLENAME+" WHERE "+USERNAME+" = "+pUserName+")";
+			lSmt.executeUpdate(CREATE_TABLE_QUERY);
+			String lQuery 		 = "SELECT * FROM "+SQL_USER_TABLENAME+" WHERE "+USERNAME+" = '"+pUserName+"'";
+			System.out.println(lQuery);
 			ResultSet lResultSet = lSmt.executeQuery(lQuery);
 			
 			while (lResultSet.next()) {
@@ -135,7 +136,7 @@ public class UserTable {
 			Connection lConnection = CommonUtility.getSqlConnection();
 			java.sql.Statement lSmt = lConnection.createStatement();
 			
-			lSmt.executeQuery(CREATE_TABLE_QUERY);
+			lSmt.executeUpdate(CREATE_TABLE_QUERY);
 			String lQuery 		 = "SELECT * FROM "+SQL_USER_TABLENAME;
 			ResultSet lResultSet = lSmt.executeQuery(lQuery);
 			
@@ -143,6 +144,8 @@ public class UserTable {
 				UserDTO lUserData = new UserDTO();
 				lUserData.setFirstName(lResultSet.getString(FIRST_NAME));
 				lUserData.setLastName(lResultSet.getString(LAST_NAME));
+				lUserData.setUserName(lResultSet.getString(USERNAME));
+				lUserData.setPassword(lResultSet.getString(PASSWORD));
 				lUserData.setUserType(lResultSet.getString(USER_TYPE));
 				lUserData.setId(lResultSet.getString(ID));
 				lListOfUser.add(lUserData);

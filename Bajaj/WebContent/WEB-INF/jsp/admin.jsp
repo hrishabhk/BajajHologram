@@ -1,6 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    <% String loginModule = (String) session.getAttribute("loginModule"); %>
+    <% String fname = (String) session.getAttribute("firstname"); 
+    	Boolean adminLogin = (Boolean) session.getAttribute("adminLogin"); 
+    if(adminLogin == null || !adminLogin)
+    	response.sendRedirect("./index.do");
+    %>
+    
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,10 +14,10 @@
 <link href="lib/css/bootstrap.css" rel="stylesheet">
 <link rel="stylesheet" type="text/stylesheet" href="lib/css/jquery.dataTables.css">
 <link rel="stylesheet" type="text/stylesheet" href="lib/css/jquery-ui.min.css">
+<link rel="stylesheet" type="text/stylesheet" href="css/reset.css">
 <link rel="stylesheet" type="text/stylesheet" href="css/admin.css">
-<script type="text/javascript">
-var loginModule = <%=loginModule%>;
-</script>
+<link rel="stylesheet" type="text/stylesheet" href="css/style.css">
+<link rel="stylesheet" type="text/stylesheet" href="css/styles.css">
 <title>Admin</title>
 </head>
 <body>
@@ -28,8 +33,8 @@ var loginModule = <%=loginModule%>;
       	</div>
       	<div class="container tab-body" id="contact_body">
       	<div class="row" style=" height: 100%; ">
-       		<div class="col-sm-3 contact-container contactListContainer">
-				<div class="navbar navbar-default nav-contact-panel" role="navigation" id="cancel-contact" >
+       		<div class="col-sm-3 contact-container">
+				<div class="navbar navbar-default nav-contact-panel contactListContainer" role="navigation" id="cancel-contact" >
 					<a class="btn btn-default btn-sm pull-right give-margin" id=cancel-contact-button>X Cancel</a>
 				</div>
 				<div class="nav-contact-panel" role="navigation" id="userListContainer"></div>
@@ -44,7 +49,7 @@ var loginModule = <%=loginModule%>;
      </div>
     </div>
         	</script>
-<script type="text/template" id="userFormTemplate">
+	<script type="text/template" id="userFormTemplate">
  		<form class="form" style="margin-top: 25px;" id="user-form">
   		<div class="row">
   			<div class="col-sm-4">
@@ -52,8 +57,8 @@ var loginModule = <%=loginModule%>;
   			</div>
   			<div class="col-sm-8">
   				<div class="form-group">
-					<input type = "hidden" name="id" id="id" value="">
-  					<input class="form-control" placeholder="First Name" name="firstName" id="fName">
+					<input type = "hidden" name="id" id="id" value="<@=user.get('id')@>">
+  					<input class="form-control" placeholder="First Name" name="firstName" id="fName" value="<@=user.get('firstName')@>">
   				</div>
   			</div>
   		</div>
@@ -63,7 +68,7 @@ var loginModule = <%=loginModule%>;
   			</div>
   			<div class="col-sm-8">
   				<div class="form-group">
-  					<input class="form-control" placeholder="Last Name" name="lastName" id="lName">
+  					<input class="form-control" placeholder="Last Name" name="lastName" id="lName" value="<@=user.get('lastName')@>">
   				</div>
   			</div>
   		</div>
@@ -73,7 +78,7 @@ var loginModule = <%=loginModule%>;
   			</div>
   			<div class="col-sm-8">
   				<div class="form-group">
-  					<input class="form-control" placeholder="Email Address" name="userName" id="email">
+  					<input class="form-control" placeholder="Email Address" name="userName" id="email" value="<@=user.get('userName')@>">
   				</div>
   			</div>
   		</div>
@@ -83,7 +88,7 @@ var loginModule = <%=loginModule%>;
   			</div>
   			<div class="col-sm-8">
   				<div class="form-group">
-  					<input type = "password" class="form-control" placeholder="Password" name="password" id="password">
+  					<input type = "password" class="form-control" placeholder="Password" name="password" id="password" value="<@=user.get('password')@>">
   				</div>
   			</div>
   		</div>
@@ -93,23 +98,32 @@ var loginModule = <%=loginModule%>;
   			</div>
   			<div class="col-sm-8">
   				<div class="form-group">
-  					<select class="form-control" id="userType" name="userType">
-  						<option value="staff">Staff</option>
-  						<option value="admin">Admin</option>
+  					<select class="form-control" id="userType" name="userType" value="<@=user.get('userType')@>">
+  						<option value="staff" <@=user.get('userType')=="staff" ? "selected" : ""@>>Staff</option>
+  						<option value="admin" <@=user.get('userType')=="admin" ? "selected" : ""@>>Admin</option>
   					</select>
   				</div>
   			</div>
   		</div>
   			<div class="row">
 				<div class="col-sm-12">
-					<button type="submit" class="btn btn-success" id="person-submit">Save User</button>
+					<button type="submit" class="btn btn-success" id="userSubmit">Save User</button>
 					<button type="reset"  class="btn btn-default">Reset</button>
 				</div>
   			</div>
   		</div>
- </form>
+ 		</form>
     	</script>
-	
+		<script type="text/template" id="user-list-template">
+    		<@_.each(userList, function(user){@>
+			<div class="row">
+				<div class="input-group">
+					<a  class="btn btn-default form-control show-user" id=<@= user.get('id') @>><span class="pull-left"><@= user.get('firstName')@></span></a>
+					<span class="input-group-addon btn btn-default delete-user" id=<@= user.get('id') @>><span class="glyphicon glyphicon-trash " id=<@= user.id @>> </span></span>
+				</div>
+			</div>
+			<@});@>
+    	</script>
 	<script type="text/javascript" src="lib/js/underscore-min.js"></script>
 	<script type="text/javascript" src="lib/js/jquery-1.10.2.js"></script>
 	<script type="text/javascript" src="lib/js/bootstrap.min.js"></script>
@@ -126,6 +140,7 @@ var loginModule = <%=loginModule%>;
 	
 	<!-- Views -->
 	<script type="text/javascript" src="js/view/UserFormView.js"></script>
+	<script type="text/javascript" src="js/view/UserListView.js"></script>
 	<script type="text/javascript" src="js/view/UserBaseView.js"></script>
 	
 	<!-- Router -->
